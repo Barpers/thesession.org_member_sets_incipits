@@ -1,3 +1,6 @@
 *.html
 __pycache__/*
 .DS_store/*
+.vscode/*
+sets_full.json
+tune_id_url_abc.json
