@@ -22,4 +22,4 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Execute Python script
-        run: python your_barpers_incipits.py
+        run: python barpers_incipits.py
