@@ -55,7 +55,7 @@ try:
             print(f"Page {page_num}: Downloaded {len(page_data['sets'])} sets")
     
     # Save to file
-    output_file = "./sets_full.json"
+    output_file = "./data/sets_full.json"
     with open(output_file, "w") as f:
         json.dump(all_sets, f, indent=2)
     

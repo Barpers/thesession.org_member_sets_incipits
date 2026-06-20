@@ -6,7 +6,7 @@ now =( datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
 
 # Read the JSON
-with open('./sets_full.json', 'r', encoding='utf-8') as f:
+with open('./data/sets_full.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 # Collect all unique tags (case-insensitive, preserve original for display)
@@ -835,7 +835,7 @@ render();
 </body>
 </html>'''
 
-output_path = './barpers_session_sets.html'
+output_path = './data/barpers_session_sets.html'
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(HTML)
 
