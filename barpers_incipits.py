@@ -1,5 +1,11 @@
 import subprocess
 import sys
+import os
+
+#Create data directory if it doesn't exist
+directory = "./data"
+os.makedirs(directory, exist_ok = True)
+
 
 SCRIPTS = [
     './download_sets.py',

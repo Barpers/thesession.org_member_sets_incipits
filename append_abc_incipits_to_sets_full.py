@@ -36,8 +36,8 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
-SETS_FILE  = Path("./sets_full.json")
-CACHE_FILE = Path("./tune_id_url_abc.json")
+SETS_FILE  = Path("./data/sets_full.json")
+CACHE_FILE = Path("./data/tune_id_url_abc.json")
 API_DELAY  = 0.5  # seconds between outbound API calls
 
 
