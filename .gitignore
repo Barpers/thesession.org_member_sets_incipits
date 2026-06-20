@@ -4,3 +4,4 @@ __pycache__/*
 .vscode/*
 sets_full.json
 tune_id_url_abc.json
+data/*
