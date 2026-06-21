@@ -14,3 +14,5 @@ Searchable/Filterable by
 Ordered by set date/name ASC/DESC
 
 Set name links back to thesession.org
+
+<a href="data/sets_full.json">full sets</a>
