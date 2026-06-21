@@ -488,7 +488,11 @@ HTML = f'''<!DOCTYPE html>
 </style>
 </head>
 <body>
-
+<a onclick="this.href='data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)" 
+   href="#" 
+   download="barpers_sets_incipits.html">
+   Download
+</a>
 <header>
   <h1><a href="https://thesession.org/members/179479/sets" target="_blank">Barpers Sets</a> <span>thesession.org</span></h1>
 </header>
