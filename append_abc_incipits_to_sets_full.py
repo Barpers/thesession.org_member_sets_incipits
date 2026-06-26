@@ -1,335 +1,860 @@
-#!/usr/bin/env python3
-"""
-append_abc_incipits_to_sets_full.py
-==================
-Structure of sets_full.json:
-  [                          <- top-level array of set objects
-    {
-      "settings": [          <- array of setting objects
-        {
-          "id":  456,
-          "url": "https://thesession.org/tunes/123#setting456",
-          ...
-        }
-      ]
-    }
-  ]
+import json, html, datetime
 
-For each setting object:
-  - Match setting["url"] against tune_id_url_abc.json entries by "url" key.
-  - Hit  → copy cached "abc" value onto setting["abc"].
-  - Miss → call thesession.org API:
-      1. Split setting["url"] into base URL and #fragment.
-      2. GET base?format=json
-      3. In returned JSON "settings" array, match entry whose "id" equals
-         the numeric part of the fragment (strip leading "setting" text).
-      4. From that matched entry take "id", "url" (= original full URL),
-         and "abc" (trimmed to a 2-bar incipit, anacrusis ignored).
-      5. Append { id, url, abc } to tune_id_url_abc.json.
-      6. Append incipit abc to setting["abc"] in sets_full.json.
-"""
 
-import json
+now = (datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+
+
+# Read the JSON
+with open('./data/sets_full.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+# Collect all unique tags (case-insensitive, preserve original for display)
+all_tags = {}
+for item in data:
+    for tag in item.get('tags', []):
+        all_tags[tag.lower()] = tag
+
+tag_options_html = ''
+for lower, orig in sorted(all_tags.items()):
+    tag_options_html += f'<label class="tag-option"><input type="checkbox" value="{html.escape(lower)}" onchange="applyFilters()"> {html.escape(orig)}</label>\n'
+
+# Collect all unique keys from settings
+all_keys = {}
+for item in data:
+    for setting in item.get('settings', []):
+        key = setting.get('key', '').strip()
+        if key:
+            all_keys[key.lower()] = key
+
+key_options_html = ''
+for lower, orig in sorted(all_keys.items()):
+    key_options_html += f'<label class="tag-option"><input type="checkbox" value="{html.escape(lower)}" onchange="applyFilters()"> {html.escape(orig)}</label>\n'
+
+# Collect all unique tune types from settings
+all_types = {}
+for item in data:
+    for setting in item.get('settings', []):
+        tune_type = setting.get('type', '').strip()
+        if tune_type:
+            all_types[tune_type.lower()] = tune_type
+
+type_options_html = ''
+for lower, orig in sorted(all_types.items()):
+    type_options_html += f'<label class="tag-option"><input type="checkbox" value="{html.escape(lower)}" onchange="applyFilters()"> {html.escape(orig)}</label>\n'
+
 import re
-import time
-import urllib.request
-import urllib.error
-from fractions import Fraction
-from pathlib import Path
 
-SETS_FILE  = Path("./data/sets_full.json")
-#SETS_FILE  = Path("./data/sets_test.json")  # for testing
-CACHE_FILE = Path("./data/tune_id_url_abc.json")
-#CACHE_FILE = Path("./data/tune_id_url_abc_test.json")  # for testing
-CACHE_FILE.touch(exist_ok=True)  # ensure it exists before reading
-API_DELAY  = 0.5  # seconds between outbound API calls
-
-
-# ── incipit ────────────────────────────────────────────────────────────────────
-
-BARLINE_RE = re.compile(r'\|\||:\||\|:|\|\]|\[|::|[|]')
-
-def _is_barline(t):
-    return bool(BARLINE_RE.fullmatch(t))
-
-def _note_dur(s):
-    """Duration of a single ABC note string such as 'G2', 'A', 'B/', 'z4'."""
-    dm = re.match(r"[a-gA-GzxZ][,']*(\d*)(/*\d*)", s)
-    if not dm:
-        return Fraction(1)
-    num_s, den_s = dm.group(1), dm.group(2)
-    num = int(num_s) if num_s else 1
-    if den_s.startswith('/') and den_s[1:].isdigit():
-        den = int(den_s[1:])
-    elif den_s.startswith('/'):
-        den = 2 ** den_s.count('/')
+def first_two_bars(abc):
+    """Extract the first 2 complete bars from an ABC string, ignoring anacrusis."""
+    abc = abc.replace('!', ' ')
+    if 'V:' in abc:
+        match = re.search(r'V:\s*\S+\s*(.*?)(?=V:\s*\S|\Z)', abc, re.DOTALL)
+        abc = match.group(1).strip() if match else abc
+    abc = abc.strip()
+    segments = re.split(r'\|', abc)
+    cleaned = [re.sub(r'^[:\s]+|[:\s]+$', '', s) for s in segments]
+    has_notes = lambda s: bool(re.search(r'[A-Ga-gz]', s))
+    if has_notes(cleaned[0]) if cleaned else False:
+        bars = [s for s in cleaned[1:] if has_notes(s)]
     else:
-        den = 1
-    return Fraction(num, den)
+        bars = [s for s in cleaned if has_notes(s)]
+    return ' | '.join(bars[:2])
 
-def _token_duration(token):
-    """
-    Sum durations of all notes/rests in a token.
-    For chords [abc], returns duration of the first note (they sound together).
-    """
-    # Chord: [note note ...]
-    if (token.startswith('[') and token.endswith(']')
-            and not re.match(r'\[[\|:]', token)):
-        inner = token[1:-1]
-        notes = re.findall(r'[a-gA-GzxZ][^a-gA-GzxZ]*', inner)
-        return _note_dur(notes[0]) if notes else Fraction(0)
-    # Note group: G2AB, cBAG, z4, etc. — each letter starts a new note
-    notes = re.findall(r'[a-gA-GzxZ][^a-gA-GzxZ]*', token)
-    return sum(_note_dur(n) for n in notes) if notes else Fraction(0)
+import copy
+data_processed = copy.deepcopy(data)
+for item in data_processed:
+    for setting in item.get('settings', []):
+        setting['abc_two_bars'] = setting.get('abc', '')
 
-def _parse_bar_len(header_lines):
-    """
-    Return the length of one bar expressed in L: units (the default note length).
-    E.g. M:4/4, L:1/8  →  bar = 4/4 ÷ 1/8 = 8 (eighth-note units per bar).
-    """
-    meter, unit = "4/4", Fraction(1, 8)
-    for line in header_lines:
-        m = re.match(r'^\s*M:\s*(\S+)', line)
-        if m:
-            meter = m.group(1)
-        u = re.match(r'^\s*L:\s*(\d+)/(\d+)', line)
-        if u:
-            unit = Fraction(int(u.group(1)), int(u.group(2)))
-    if meter == 'C':
-        meter = '4/4'
-    elif meter == 'C|':
-        meter = '2/2'
-    try:
-        num, den = meter.split('/')
-        return Fraction(int(num), int(den)) / unit
-    except Exception:
-        return Fraction(8)   # fallback: 4/4 in 1/8 units
+data_json = json.dumps(data_processed, ensure_ascii=False)
 
+HTML = f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Sets</title>
+<script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.3/dist/abcjs-basic-min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
-def extract_incipit(abc_full, bars=2):
-    """
-    Return the first `bars` complete bars of the ABC body, preceded by any
-    anacrusis (pickup notes) and all header lines.
+  :root {{
+    --ink:       #1a1208;
+    --parchment: #f5f0e8;
+    --warm-mid:  #e8dfc8;
+    --rule:      #c4a96a;
+    --gold:      #9a7b2f;
+    --fade:      #7a6a50;
+    --accent:    #5c3d1e;
+    --staff-bg:  #faf7f1;
+    --sidebar-w: 320px;
+  }}
 
-    An anacrusis is detected by measuring the total note duration before the
-    first barline (skipping any leading barline such as |:).  If that duration
-    is strictly between zero and one full bar, it is an anacrusis and is
-    included in the output without counting toward `bars`.
+  *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
 
-    Leading barlines (|:, ||, [|) that appear before any notes are never
-    counted as closing a bar.
-    """
-    header_lines, body_lines, in_body = [], [], False
-    for line in abc_full.splitlines():
-        if in_body:
-            body_lines.append(line)
-        else:
-            header_lines.append(line)
-            if re.match(r'^\s*K:', line):
-                in_body = True
+  body {{
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.55;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }}
 
-    if not body_lines:
-        return abc_full
+  /* ── Sidebar ── */
+  #sidebar {{
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--warm-mid);
+    border-right: 2px double var(--rule);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.28s ease, min-width 0.28s ease, opacity 0.22s ease;
+  }}
 
-    bar_len = _parse_bar_len(header_lines)
+  #sidebar.collapsed {{
+    width: 0;
+    min-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    border-right: none;
+  }}
 
-    # Remove inline fields [X:...] and % comments before tokenising
-    body = re.sub(r'\[(?!\|)[A-Za-z]:[^\]]*\]', '', "\n".join(body_lines))
-    body = re.sub(r'%[^\n]*', '', body)
+  /* ── Toggle button ── */
+  #sidebar-toggle {{
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 200;
+    width: 34px;
+    height: 34px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+    background: var(--parchment);
+    color: var(--accent);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.12);
+    transition: background 0.15s, left 0.28s ease;
+  }}
 
-    tokens = re.findall(r'\|\||:\||\|:|\|\]|\[|::|[|]|[^\s|]+', body)
+  #sidebar-toggle:hover {{ background: var(--warm-mid); }}
 
-    # ── detect anacrusis ───────────────────────────────────────────────────────
-    # Measure note duration before the first barline, skipping any leading
-    # barlines (e.g. |: at the very start of the body).
-    pre_bar_dur = Fraction(0)
-    seen_notes_pre = False
-    for tok in tokens:
-        if _is_barline(tok):
-            if seen_notes_pre:
-                break           # first barline after notes — stop scanning
-            # else: leading barline, skip it
-        else:
-            seen_notes_pre = True
-            pre_bar_dur += _token_duration(tok)
+  #sidebar-toggle.open {{
+    left: calc(var(--sidebar-w) + 8px);
+  }}
 
-    has_anacrusis = Fraction(0) < pre_bar_dur < bar_len
+  /* ── Sidebar header ── */
+  .sidebar-header {{
+    border-bottom: 3px double var(--rule);
+    padding: 1.2rem 1rem 1rem 3rem;
+    flex-shrink: 0;
+  }}
 
-    # ── collect tokens ─────────────────────────────────────────────────────────
-    # past_anacrusis starts True when there is no anacrusis, so bar counting
-    # begins immediately.  Leading barlines (before any notes) are ignored.
-    past_anacrusis = not has_anacrusis
-    collected, bars_done = [], 0
-    seen_notes_collect = False
+  .sidebar-header h1 {{
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -.02em;
+    color: var(--accent);
+    font-style: italic;
+  }}
 
-    for tok in tokens:
-        collected.append(tok)
-        if _is_barline(tok):
-            if not seen_notes_collect:
-                pass            # leading barline before any notes — don't count
-            elif not past_anacrusis:
-                past_anacrusis = True   # first barline after notes ends anacrusis
-            else:
-                bars_done += 1
-                if bars_done >= bars:
-                    break
-        else:
-            seen_notes_collect = True
+  .sidebar-header h1 a {{ color: inherit; text-decoration: none; }}
+  .sidebar-header h1 a:hover {{ text-decoration: underline; text-decoration-color: var(--gold); }}
 
-    return " ".join(collected)
+  .sidebar-header h1 span {{
+    display: block;
+    font-style: normal;
+    color: var(--gold);
+    font-size: 0.72rem;
+    font-weight: 400;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .05em;
+    margin-top: .15rem;
+  }}
 
+  .sidebar-header .dl-btn {{
+    margin-top: 0.6rem;
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: .2rem .5rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+  }}
 
-# ── URL helpers ────────────────────────────────────────────────────────────────
+  .sidebar-header .dl-btn:hover {{ background: var(--parchment); }}
+  .sidebar-header .dl-btn img {{ width: 18px; height: 18px; }}
 
-def split_url_fragment(full_url):
-    """
-    'https://thesession.org/tunes/123#setting456'
-      -> base       = 'https://thesession.org/tunes/123'
-         setting_id = 456  (int)
+  /* ── Controls ── */
+  .controls {{
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }}
 
-    Returns (base_url, setting_id_int) or (full_url, None) if no fragment.
-    """
-    if '#' not in full_url:
-        return full_url, None
-    base, fragment = full_url.split('#', 1)
-    digits = re.sub(r'^\D+', '', fragment)  # strip 'setting' prefix
-    return base, int(digits) if digits else None
+  .control-group {{
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }}
 
+  .control-label {{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--fade);
+  }}
 
-# ── API fetch ──────────────────────────────────────────────────────────────────
+  /* Sort buttons */
+  .sort-group {{
+    display: flex;
+    gap: .3rem;
+    flex-wrap: wrap;
+  }}
 
-def fetch_setting(setting_url, setting_id_from_obj):
-    """
-    GET base_url?format=json, find the settings entry whose id matches
-    the numeric part of the URL fragment (cross-checked against setting_id_from_obj).
+  .sort-btn {{
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: .28rem .65rem;
+    font-family: 'EB Garamond', serif;
+    font-size: .92rem;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }}
 
-    Returns dict(id, url, abc) where abc is a 2-bar incipit, or None.
-    """
-    base_url, fragment_id = split_url_fragment(setting_url)
+  .sort-btn.active {{
+    background: var(--accent);
+    color: var(--parchment);
+    border-color: var(--accent);
+  }}
 
-    # Prefer the fragment id; fall back to the id value on the setting object
-    target_id = fragment_id if fragment_id is not None else setting_id_from_obj
+  .sort-btn:hover:not(.active) {{ background: var(--rule); }}
 
-    api_url = base_url + "?format=json"
-    print(f"    GET {api_url}  (looking for id={target_id})")
+  /* Tag / Key dropdown */
+  .tag-dropdown-wrap {{ position: relative; }}
 
-    try:
-        req = urllib.request.Request(
-            api_url,
-            headers={"Accept": "application/json",
-                     "User-Agent": "EAsyABC-enricher/1.0"}
-        )
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            data = json.loads(resp.read().decode())
-    except urllib.error.HTTPError as e:
-        print(f"    HTTP error {e.code}")
-        return None
-    except Exception as e:
-        print(f"    Request failed: {e}")
-        return None
+  .tag-toggle {{
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: .28rem .9rem .28rem .7rem;
+    font-family: 'EB Garamond', serif;
+    font-size: .92rem;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    width: 100%;
+    transition: background .15s;
+  }}
 
-    # Find the matching entry in the API's "settings" array
-    api_settings = data.get("settings", [])
-    matched = next((s for s in api_settings if s.get("id") == target_id), None)
+  .tag-toggle:hover {{ background: var(--parchment); }}
+  .tag-toggle.has-active {{ background: var(--accent); color: var(--parchment); border-color: var(--accent); }}
+  .tag-toggle::after {{ content: '▾'; font-size: .75rem; margin-left: auto; }}
 
-    if matched is None:
-        print(f"    id {target_id} not found in API response "
-              f"(available: {[s.get('id') for s in api_settings[:5]]})")
-        return None
+  .tag-panel {{
+    display: none;
+    background: var(--parchment);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: .6rem .8rem;
+    max-height: 220px;
+    overflow-y: auto;
+    margin-top: 3px;
+  }}
 
-    raw_abc = (matched.get("abc") or "").strip()
-    if not raw_abc:
-        print(f"    matched entry has empty abc")
-        return None
+  .tag-panel.open {{ display: block; }}
 
-    # Build a minimal ABC header so extract_incipit can work
-    tune_name = data.get("name", "")
-    meter     = data.get("meter", "4/4")
-    key       = matched.get("key", "")
-    abc_full  = f"X:1\nT:{tune_name}\nM:{meter}\nL:1/8\nK:{key}\n{raw_abc}"
+  .tag-option {{
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .18rem 0;
+    font-size: .92rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }}
 
-    incipit = extract_incipit(abc_full, bars=2)
+  .tag-option input {{ accent-color: var(--accent); cursor: pointer; }}
 
-    return {
-        "id":  matched["id"],   # integer, as returned by the API
-        "url": setting_url,     # full original URL with #fragment
-        "abc": incipit,
-    }
+  .clear-tags {{
+    display: block;
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .68rem;
+    color: var(--gold);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    width: 100%;
+    text-align: left;
+  }}
 
+  .clear-tags:hover {{ color: var(--accent); }}
 
-# ── main ───────────────────────────────────────────────────────────────────────
+  .andor-row {{
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--rule);
+  }}
 
-def main():
-    print(f"Loading {SETS_FILE}")
-    sets_data = json.loads(SETS_FILE.read_text(encoding="utf-8"))
+  .andor-label {{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .65rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--fade);
+    margin-right: .2rem;
+  }}
 
-    print(f"Loading {CACHE_FILE}")
-    cache_data = json.loads(CACHE_FILE.read_text(encoding="utf-8")) \
-                 if CACHE_FILE.exists() else []
+  .andor-btn {{
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: .1rem .45rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .65rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background .12s, color .12s;
+  }}
 
-    # Index by exact URL string, lowercased for comparison
-    cache_index = {(e.get("url") or "").lower(): e for e in cache_data}
-    print(f"Cache: {len(cache_index)} entries\n")
+  .andor-btn.active {{ background: var(--gold); color: var(--parchment); border-color: var(--gold); }}
+  .andor-btn:hover:not(.active) {{ background: var(--warm-mid); }}
 
-    if not isinstance(sets_data, list):
-        print("ERROR: sets_full.json top level must be an array")
-        return
+  /* Name search */
+  .search-wrap {{
+    position: relative;
+    display: flex;
+    align-items: center;
+  }}
 
-    hits = misses = errors = 0
+  .search-wrap input {{
+    background: var(--parchment);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: .28rem 1.8rem .28rem .65rem;
+    font-family: 'EB Garamond', serif;
+    font-size: .92rem;
+    color: var(--ink);
+    width: 100%;
+    outline: none;
+    transition: border-color .15s;
+  }}
 
-    for set_i, set_obj in enumerate(sets_data):
-        settings_list = set_obj.get("settings")
-        if not isinstance(settings_list, list):
-            continue
+  .search-wrap input:focus {{ border-color: var(--accent); }}
+  .search-wrap input::placeholder {{ color: var(--fade); font-style: italic; }}
 
-        for j, setting in enumerate(settings_list):
-            setting_url = (setting.get("url") or "").strip()
-            if not setting_url:
-                print(f"  [set {set_i}][{j}] no url — skipped")
-                continue
+  .search-clear {{
+    position: absolute;
+    right: .45rem;
+    background: none;
+    border: none;
+    color: var(--fade);
+    font-size: .85rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    display: none;
+  }}
 
-            #print(f"  [set {set_i}][{j}] {setting_url}")
-            lookup_key = setting_url.lower()
+  .search-clear:hover {{ color: var(--accent); }}
 
-            # ── cache hit ──────────────────────────────────────────────
-            if lookup_key in cache_index:
-                setting["abc"] = cache_index[lookup_key].get("abc", "")
-                hits += 1
-                #print(f"    cache hit")
-                continue
+  mark {{
+    background: #f0d97a;
+    color: var(--ink);
+    border-radius: 2px;
+    padding: 0 1px;
+  }}
 
-            # ── API lookup ─────────────────────────────────────────────
-            time.sleep(API_DELAY)
-            setting_id_from_obj = setting.get("id")
-            result = fetch_setting(setting_url, setting_id_from_obj)
+  /* Result count pinned to sidebar bottom */
+  #result-count {{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .68rem;
+    color: var(--fade);
+    padding: 0.5rem 1rem 0.8rem;
+    border-top: 1px solid var(--rule);
+    margin-top: auto;
+  }}
 
-            if result:
-                # Write incipit abc onto the setting in sets_full.json
-                setting["abc"] = result["abc"]
+  /* ── Main content ── */
+  #main {{
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1rem 1rem 1rem;
+  }}
 
-                # Append new entry to cache file data (avoid duplicates)
-                if result["url"].lower() not in cache_index:
-                    cache_data.append(result)
-                    cache_index[result["url"].lower()] = result
+  /* Sets list */
+  #sets-list {{
+    border: 2px solid #5c3d1e;
+    border-radius: 0.5em;
+    column-width: 20em;
+    column-rule: 1px solid #5c3d1e;
+    padding: 0 1rem;
+  }}
 
-                misses += 1
-                print(f"    ok")
-            else:
-                errors += 1
-                print(f"    FAILED — no abc written")
+  .set-card {{
+    border-bottom: 1px solid var(--warm-mid);
+    padding: 1.4rem 0 1.2rem;
+    break-inside: avoid;
+  }}
 
-    # ── persist both files ─────────────────────────────────────────────
-    print(f"\nWriting {SETS_FILE}")
-    SETS_FILE.write_text(
-        json.dumps(sets_data, indent=2, ensure_ascii=False), encoding="utf-8")
+  .set-card:last-child {{ border-bottom: none; }}
 
-    print(f"Writing {CACHE_FILE}")
-    CACHE_FILE.write_text(
-        json.dumps(cache_data, indent=2, ensure_ascii=False), encoding="utf-8")
+  .set-name {{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: -.01em;
+    display: inline-block;
+    margin-bottom: .7rem;
+  }}
 
-    print(f"\nDone  hits={hits}  api={misses}  errors={errors}  "
-          f"cache_size={len(cache_data)}")
+  .set-name:hover {{ text-decoration: underline; text-decoration-color: var(--gold); }}
 
+  .set-tags {{
+    display: flex;
+    gap: .35rem;
+    flex-wrap: wrap;
+    margin-bottom: .75rem;
+  }}
 
-if __name__ == "__main__":
-    main()
+  .tag-pill {{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .65rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    background: var(--warm-mid);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: .12rem .45rem;
+    color: var(--fade);
+  }}
+
+  .tune-notation.key-hidden {{
+    opacity: 0.22;
+    filter: grayscale(0.6);
+    pointer-events: none;
+  }}
+
+  .tunes-list {{ display: flex; flex-direction: column; gap: 0; }}
+
+  .tune-notation {{
+    background: var(--staff-bg);
+    border-left: 3px solid var(--rule);
+    padding: 0 .8rem;
+    border-radius: 0 3px 3px 0;
+    overflow-x: auto;
+    transition: opacity .2s, filter .2s;
+  }}
+
+  .tune-notation svg {{ max-width: 100%; height: auto; display: block; margin: 0; }}
+
+  .no-results {{
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--fade);
+    font-style: italic;
+    font-size: 1.1rem;
+  }}
+
+  @media (max-width: 600px) {{
+    #sidebar {{ --sidebar-w: 85vw; }}
+    #main {{ padding-left: 3rem; padding-right: 1rem; }}
+  }}
+</style>
+</head>
+<body>
+
+<!-- Toggle button — always visible -->
+<button id="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" aria-expanded="true">✕</button>
+
+<!-- Sidebar: title + controls -->
+<aside id="sidebar">
+
+  <div class="sidebar-header">
+     <h1>   
+      <button type="button" class="dl-btn" title="Download HTML sets file"
+        onclick="download('https://barpers.github.io/thesession.org_member_sets_incipits/data/barpers_session_sets.html', 'barpers_session_sets.html')">
+        <img src="../images/download-icon-image.jpg" alt="Download">
+      </button> 
+      <a href="https://thesession.org/members/179479/sets" target="_blank">Barpers Sets</a>
+      <span>thesession.org</span>
+    </h1>
+ 
+  </div>
+
+  <div class="controls">
+
+    <div class="control-group">
+      <span class="control-label">Sort</span>
+      <div class="sort-group">
+        <button class="sort-btn active" id="btn-name-asc" onclick="setSort('name','asc')">Name ↑</button>
+        <button class="sort-btn" id="btn-name-desc" onclick="setSort('name','desc')">Name ↓</button>
+        <button class="sort-btn" id="btn-date-asc" onclick="setSort('date','asc')">Date ↑</button>
+        <button class="sort-btn" id="btn-date-desc" onclick="setSort('date','desc')">Date ↓</button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Tags</span>
+      <div class="tag-dropdown-wrap" id="tag-wrap">
+        <button class="tag-toggle" id="tag-toggle-btn" onclick="togglePanel('tag-panel', ['key-panel','type-panel'])">Tags</button>
+        <div class="tag-panel" id="tag-panel">
+          <div class="andor-row">
+            <span class="andor-label">Match</span>
+            <button class="andor-btn active" id="tag-and-btn" onclick="setAndOr('tags','and')">AND</button>
+            <button class="andor-btn" id="tag-or-btn" onclick="setAndOr('tags','or')">OR</button>
+          </div>
+          <button class="clear-tags" onclick="clearTags()">Clear all</button>
+          {tag_options_html}
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Keys</span>
+      <div class="tag-dropdown-wrap" id="key-wrap">
+        <button class="tag-toggle" id="key-toggle-btn" onclick="togglePanel('key-panel', ['tag-panel','type-panel'])">Keys</button>
+        <div class="tag-panel" id="key-panel">
+          <div class="andor-row">
+            <span class="andor-label">Match</span>
+            <button class="andor-btn active" id="key-and-btn" onclick="setAndOr('keys','and')">AND</button>
+            <button class="andor-btn" id="key-or-btn" onclick="setAndOr('keys','or')">OR</button>
+          </div>
+          <button class="clear-tags" onclick="clearKeys()">Clear all</button>
+          {key_options_html}
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Type</span>
+      <div class="tag-dropdown-wrap" id="type-wrap">
+        <button class="tag-toggle" id="type-toggle-btn" onclick="togglePanel('type-panel', ['tag-panel','key-panel'])">Type</button>
+        <div class="tag-panel" id="type-panel">
+          <div class="andor-row">
+            <span class="andor-label">Match</span>
+            <button class="andor-btn active" id="type-and-btn" onclick="setAndOr('types','and')">AND</button>
+            <button class="andor-btn" id="type-or-btn" onclick="setAndOr('types','or')">OR</button>
+          </div>
+          <button class="clear-tags" onclick="clearTypes()">Clear all</button>
+          {type_options_html}
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Search</span>
+      <div class="search-wrap">
+        <input type="search" id="name-search" placeholder="tune name…" oninput="onSearch(this)" autocomplete="off">
+        <button class="search-clear" id="search-clear-btn" onclick="clearSearch()" title="Clear">✕</button>
+      </div>
+    </div>
+
+  </div><!-- /controls -->
+
+  <div id="result-count"></div>
+
+</aside>
+
+<!-- Main scrollable area -->
+<main id="main">
+  <div id="sets-list"></div>
+</main>
+
+<script>
+const RAW = {data_json};
+
+let sortField = 'name';
+let sortDir   = 'asc';
+let activeTags  = new Set();
+let activeKeys  = new Set();
+let activeTypes = new Set();
+let tagsMode  = 'and';
+let keysMode  = 'and';
+let typesMode = 'and';
+let searchQuery = '';
+let sidebarOpen = true;
+
+function toggleSidebar() {{
+  sidebarOpen = !sidebarOpen;
+  const sidebar = document.getElementById('sidebar');
+  const btn = document.getElementById('sidebar-toggle');
+  sidebar.classList.toggle('collapsed', !sidebarOpen);
+  btn.classList.toggle('open', sidebarOpen);
+  btn.setAttribute('aria-expanded', sidebarOpen);
+  btn.textContent = sidebarOpen ? '✕' : '☰';
+}}
+
+// Close all panels when clicking outside
+document.addEventListener('click', e => {{
+  ['tag-wrap', 'key-wrap', 'type-wrap'].forEach(id => {{
+    const wrap = document.getElementById(id);
+    if (wrap && !wrap.contains(e.target)) {{
+      wrap.querySelector('.tag-panel').classList.remove('open');
+    }}
+  }});
+}});
+
+function togglePanel(openId, closeIds) {{
+  (Array.isArray(closeIds) ? closeIds : [closeIds]).forEach(id => {{
+    document.getElementById(id).classList.remove('open');
+  }});
+  document.getElementById(openId).classList.toggle('open');
+}}
+
+function setAndOr(filter, mode) {{
+  if (filter === 'tags')  {{ tagsMode  = mode; }}
+  if (filter === 'keys')  {{ keysMode  = mode; }}
+  if (filter === 'types') {{ typesMode = mode; }}
+  ['and','or'].forEach(m => {{
+    const btn = document.getElementById(`${{filter.slice(0,-1)}}-${{m}}-btn`);
+    if (btn) btn.classList.toggle('active', m === mode);
+  }});
+  render();
+}}
+
+function setSort(field, dir) {{
+  sortField = field;
+  sortDir   = dir;
+  ['name-asc','name-desc','date-asc','date-desc'].forEach(id => {{
+    document.getElementById('btn-' + id).classList.remove('active');
+  }});
+  document.getElementById(`btn-${{field}}-${{dir}}`).classList.add('active');
+  render();
+}}
+
+function applyFilters() {{
+  activeTags = new Set();
+  document.querySelectorAll('#tag-panel .tag-option input:checked').forEach(cb => {{
+    activeTags.add(cb.value);
+  }});
+  const tagBtn = document.getElementById('tag-toggle-btn');
+  tagBtn.classList.toggle('has-active', activeTags.size > 0);
+  tagBtn.textContent = activeTags.size > 0 ? `Tags (${{activeTags.size}})` : 'Tags';
+
+  activeKeys = new Set();
+  document.querySelectorAll('#key-panel .tag-option input:checked').forEach(cb => {{
+    activeKeys.add(cb.value);
+  }});
+  const keyBtn = document.getElementById('key-toggle-btn');
+  keyBtn.classList.toggle('has-active', activeKeys.size > 0);
+  keyBtn.textContent = activeKeys.size > 0 ? `Keys (${{activeKeys.size}})` : 'Keys';
+
+  activeTypes = new Set();
+  document.querySelectorAll('#type-panel .tag-option input:checked').forEach(cb => {{
+    activeTypes.add(cb.value);
+  }});
+  const typeBtn = document.getElementById('type-toggle-btn');
+  typeBtn.classList.toggle('has-active', activeTypes.size > 0);
+  typeBtn.textContent = activeTypes.size > 0 ? `Type (${{activeTypes.size}})` : 'Type';
+
+  render();
+}}
+
+function clearTags()  {{ document.querySelectorAll('#tag-panel .tag-option input').forEach(cb => cb.checked = false); applyFilters(); }}
+function clearKeys()  {{ document.querySelectorAll('#key-panel .tag-option input').forEach(cb => cb.checked = false); applyFilters(); }}
+function clearTypes() {{ document.querySelectorAll('#type-panel .tag-option input').forEach(cb => cb.checked = false); applyFilters(); }}
+
+function onSearch(input) {{
+  searchQuery = input.value.trim().toLowerCase();
+  document.getElementById('search-clear-btn').style.display = searchQuery ? 'block' : 'none';
+  render();
+}}
+
+function clearSearch() {{
+  document.getElementById('name-search').value = '';
+  searchQuery = '';
+  document.getElementById('search-clear-btn').style.display = 'none';
+  render();
+}}
+
+function highlight(text, query) {{
+  if (!query) return document.createTextNode(text);
+  const idx = text.toLowerCase().indexOf(query);
+  if (idx === -1) return document.createTextNode(text);
+  const frag = document.createDocumentFragment();
+  frag.appendChild(document.createTextNode(text.slice(0, idx)));
+  const mark = document.createElement('mark');
+  mark.textContent = text.slice(idx, idx + query.length);
+  frag.appendChild(mark);
+  frag.appendChild(document.createTextNode(text.slice(idx + query.length)));
+  return frag;
+}}
+
+// Source - https://stackoverflow.com/a/76101203
+// Posted by enisn
+// Retrieved 2026-06-22, License - CC BY-SA 4.0
+async function download(dataurl, fileName) {{
+  const response = await fetch(dataurl);
+  const blob = await response.blob();
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  link.click();
+}}
+
+function render() {{
+  let items = RAW.slice();
+
+  if (activeTags.size > 0) {{
+    items = items.filter(item => {{
+      const itemTags = (item.tags || []).map(t => t.toLowerCase());
+      return tagsMode === 'and'
+        ? [...activeTags].every(t => itemTags.includes(t))
+        : [...activeTags].some(t => itemTags.includes(t));
+    }});
+  }}
+
+  if (activeKeys.size > 0) {{
+    items = items.filter(item => {{
+      const settingKeys = (item.settings || []).map(s => (s.key || '').toLowerCase());
+      return keysMode === 'and'
+        ? [...activeKeys].every(k => settingKeys.includes(k))
+        : [...activeKeys].some(k => settingKeys.includes(k));
+    }});
+  }}
+
+  if (activeTypes.size > 0) {{
+    items = items.filter(item => {{
+      const settingTypes = (item.settings || []).map(s => (s.type || '').toLowerCase());
+      return typesMode === 'and'
+        ? [...activeTypes].every(t => settingTypes.includes(t))
+        : [...activeTypes].some(t => settingTypes.includes(t));
+    }});
+  }}
+
+  if (searchQuery) {{
+    items = items.filter(item => {{
+      if (item.name.toLowerCase().includes(searchQuery)) return true;
+      return (item.settings || []).some(s => s.name.toLowerCase().includes(searchQuery));
+    }});
+  }}
+
+  items.sort((a, b) => {{
+    let va = sortField === 'name' ? a.name.toLowerCase() : a.date;
+    let vb = sortField === 'name' ? b.name.toLowerCase() : b.date;
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  }});
+
+  document.getElementById('result-count').textContent = `${{items.length}} of ${{RAW.length}} sets · {now}`;
+  const container = document.getElementById('sets-list');
+  container.innerHTML = '';
+
+  if (items.length === 0) {{
+    container.innerHTML = '<div class="no-results">No sets match the current search or filters.</div>';
+    return;
+  }}
+
+  items.forEach((item, si) => {{
+    const card = document.createElement('div');
+    card.className = 'set-card';
+
+    const a = document.createElement('a');
+    a.className = 'set-name';
+    a.href = item.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.appendChild(highlight(item.name, searchQuery));
+    card.appendChild(a);
+
+    if (item.tags && item.tags.length > 0) {{
+      const tagsDiv = document.createElement('div');
+      tagsDiv.className = 'set-tags';
+      item.tags.forEach(t => {{
+        const pill = document.createElement('span');
+        pill.className = 'tag-pill';
+        pill.textContent = t;
+        tagsDiv.appendChild(pill);
+      }});
+      card.appendChild(tagsDiv);
+    }}
+
+    const tunesDiv = document.createElement('div');
+    tunesDiv.className = 'tunes-list';
+
+    (item.settings || []).forEach((setting, ti) => {{
+      const notationDiv = document.createElement('div');
+      notationDiv.className = 'tune-notation';
+
+      const tuneKey  = (setting.key  || '').toLowerCase();
+      const tuneType = (setting.type || '').toLowerCase();
+      const keyDim  = activeKeys.size  > 0 && !activeKeys.has(tuneKey);
+      const typeDim = activeTypes.size > 0 && !activeTypes.has(tuneType);
+      if (keyDim || typeDim) {{
+        notationDiv.classList.add('key-hidden');
+      }}
+
+      const divId = `notation-${{si}}-${{ti}}`;
+      notationDiv.id = divId;
+      tunesDiv.appendChild(notationDiv);
+
+      const abcStr = [
+        `X:${{ti + 1}}`,
+        `T: `,
+        `M:${{setting.meter}}`,
+        `K:${{setting.key}}`,
+        setting.abc_two_bars || ''
+      ].join('\\n');
+
+      setTimeout(() => {{
+        try {{
+          ABCJS.renderAbc(divId, abcStr, {{
+            responsive: 'resize',
+            staffwidth: 520,
+            scale: 0.95,
+            paddingright: 0,
+            paddingleft: 0,
+            wrap: {{ minSpacing: 1.8, maxSpacing: 2.8, preferredMeasuresPerLine: 4 }},
+            add_classes: true,
+          }});
+        }} catch(e) {{ console.warn('ABC render error', e); }}
+      }}, 0);
+    }});
+
+    card.appendChild(tunesDiv);
+    container.appendChild(card);
+  }});
+}}
+
+// Sidebar toggle button starts in open state
+document.getElementById('sidebar-toggle').classList.add('open');
+render();
+</script>
+</body>
+</html>'''
+
+output_path = './data/barpers_session_sets.html'
+with open(output_path, 'w', encoding='utf-8') as f:
+    f.write(HTML)
+
+print(f"Written to {output_path}")
