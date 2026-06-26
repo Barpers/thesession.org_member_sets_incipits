@@ -1,5 +1,31 @@
 [
   {
+    "id": 141277,
+    "name": "Táimse Im' Chodladh",
+    "url": "https://thesession.org/members/179479/sets/141277",
+    "date": "2026-06-24 04:32:50",
+    "tags": [
+      "boblearn",
+      "bobpipes"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 6944,
+        "name": "Táimse Im' Chodladh",
+        "url": "https://thesession.org/tunes/6944#setting6944",
+        "type": "waltz",
+        "meter": "3/4",
+        "key": "Gmaj",
+        "abc": "AF | \"G\"G2>A2 Bc | \"D\"d2f2>e2 |"
+      }
+    ]
+  },
+  {
     "id": 140656,
     "name": "Caherlistrane",
     "url": "https://thesession.org/members/179479/sets/140656",
@@ -2832,6 +2858,9 @@
     "name": "Caherlistrane, The Gallowglass, The Kanturk",
     "url": "https://thesession.org/members/179479/sets/126763",
     "date": "2026-01-26 05:09:12",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -3405,6 +3434,9 @@
     "name": "Leslie's March",
     "url": "https://thesession.org/members/179479/sets/124435",
     "date": "2026-01-06 11:24:25",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -3747,6 +3779,11 @@
     "name": "The Enchanted Lady, The Holy Land",
     "url": "https://thesession.org/members/179479/sets/124231",
     "date": "2026-01-04 05:28:39",
+    "tags": [
+      "bob",
+      "bobpipes",
+      "LEARN"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -4205,6 +4242,9 @@
     "name": "The Boys On The Hilltop, Eileen O'Callaghan's",
     "url": "https://thesession.org/members/179479/sets/123946",
     "date": "2026-01-01 14:00:34",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -4602,6 +4642,7 @@
     "date": "2025-12-19 22:30:37",
     "tags": [
       "bobfiddle",
+      "boblearn",
       "bobpipes",
       "bobwhistle",
       "SSlearning"
@@ -4710,6 +4751,7 @@
     "date": "2025-12-19 01:03:00",
     "tags": [
       "bobfiddle",
+      "boblearn",
       "bobpipes",
       "bobwhistle",
       "SSlearning"
@@ -5655,6 +5697,9 @@
     "name": "Paddy Fahey's, Anthony Frawley's, I Ne'er Shall Wean Her",
     "url": "https://thesession.org/members/179479/sets/116314",
     "date": "2025-10-04 05:26:26",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -5696,6 +5741,7 @@
     "url": "https://thesession.org/members/179479/sets/116123",
     "date": "2025-10-02 05:54:15",
     "tags": [
+      "boblearn",
       "SSlearning"
     ],
     "member": {
@@ -5783,6 +5829,7 @@
     "url": "https://thesession.org/members/179479/sets/115328",
     "date": "2025-09-23 01:11:15",
     "tags": [
+      "boblearn",
       "bobpipes",
       "bobpipesknown",
       "bobwhistle"
@@ -5948,6 +5995,7 @@
     "url": "https://thesession.org/members/179479/sets/114996",
     "date": "2025-09-19 13:32:53",
     "tags": [
+      "boblearn",
       "bobpipes"
     ],
     "member": {
@@ -6221,6 +6269,9 @@
     "name": "Mountain Dew, The Rookery",
     "url": "https://thesession.org/members/179479/sets/113497",
     "date": "2025-09-03 23:22:56",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -6306,6 +6357,7 @@
     "url": "https://thesession.org/members/179479/sets/113228",
     "date": "2025-09-02 07:20:17",
     "tags": [
+      "boblearn",
       "SSlearning"
     ],
     "member": {
@@ -6445,6 +6497,9 @@
     "name": "That's Right Too!, Leading Role",
     "url": "https://thesession.org/members/179479/sets/112371",
     "date": "2025-08-25 10:29:02",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -6476,6 +6531,9 @@
     "name": "Scatter The Mud, The Legacy",
     "url": "https://thesession.org/members/179479/sets/112341",
     "date": "2025-08-25 06:43:35",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -6621,6 +6679,9 @@
     "name": "The Humours Of Bandon",
     "url": "https://thesession.org/members/179479/sets/111405",
     "date": "2025-08-16 10:46:22",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -6643,6 +6704,9 @@
     "name": "Stone Of Destiny, The Monaghan Twig, The Old Bush",
     "url": "https://thesession.org/members/179479/sets/111293",
     "date": "2025-08-14 14:34:43",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -6683,6 +6747,9 @@
     "name": "Miss Monaghan, Rakish Paddy, The Monaghan Twig",
     "url": "https://thesession.org/members/179479/sets/111292",
     "date": "2025-08-14 14:28:32",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -6934,6 +7001,10 @@
     "name": "Braigh Loch Iall",
     "url": "https://thesession.org/members/179479/sets/110959",
     "date": "2025-08-10 09:07:32",
+    "tags": [
+      "boblearn",
+      "bobpipes"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -6956,6 +7027,9 @@
     "name": "Buain Na' Rainich",
     "url": "https://thesession.org/members/179479/sets/110957",
     "date": "2025-08-10 08:44:55",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -7019,10 +7093,11 @@
   },
   {
     "id": 110938,
-    "name": "Rodney's Glory, Old John's, The Bank Of Ireland",
+    "name": "Rodney's Glory, Old John's",
     "url": "https://thesession.org/members/179479/sets/110938",
     "date": "2025-08-10 03:05:07",
     "tags": [
+      "boblearn",
       "chrislearn"
     ],
     "member": {
@@ -7048,15 +7123,6 @@
         "meter": "6/8",
         "key": "Ador",
         "abc": "|: cAA cAA | GEE GAB | cAA cAA |"
-      },
-      {
-        "id": 320,
-        "name": "The Bank Of Ireland",
-        "url": "https://thesession.org/tunes/320#setting320",
-        "type": "reel",
-        "meter": "4/4",
-        "key": "Dmix",
-        "abc": "ed | c2AB cABG | EGDG EGAB |"
       }
     ]
   },
@@ -7298,6 +7364,9 @@
     "name": "The Downfall Of Paris",
     "url": "https://thesession.org/members/179479/sets/110324",
     "date": "2025-08-02 06:01:30",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -7457,6 +7526,7 @@
     "url": "https://thesession.org/members/179479/sets/110092",
     "date": "2025-07-30 03:11:23",
     "tags": [
+      "boblearn",
       "bobpipes",
       "SSlearn"
     ],
@@ -7535,6 +7605,7 @@
     "url": "https://thesession.org/members/179479/sets/109064",
     "date": "2025-07-19 14:29:23",
     "tags": [
+      "boblearn",
       "SSlearning"
     ],
     "member": {
@@ -7805,6 +7876,7 @@
     "date": "2025-07-05 04:27:19",
     "tags": [
       "bobfiddle",
+      "boblearn",
       "bobpipes",
       "bobpipesknownnearly"
     ],
@@ -7900,6 +7972,7 @@
     "url": "https://thesession.org/members/179479/sets/107820",
     "date": "2025-07-02 13:08:57",
     "tags": [
+      "boblearn",
       "bobpipes"
     ],
     "member": {
@@ -7952,6 +8025,7 @@
     "url": "https://thesession.org/members/179479/sets/107513",
     "date": "2025-06-28 08:54:36",
     "tags": [
+      "boblearn",
       "bobpipes",
       "chrislearn"
     ],
@@ -8067,6 +8141,9 @@
     "name": "Bó Mhín Na Toitean, Chanter's Tune",
     "url": "https://thesession.org/members/179479/sets/107100",
     "date": "2025-06-23 05:17:29",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -8338,6 +8415,7 @@
     "date": "2025-06-10 06:01:01",
     "tags": [
       "bobfiddle",
+      "boblearn",
       "bobpipes",
       "SSlearning"
     ],
@@ -8412,6 +8490,9 @@
     "name": "Parnell's March, The Humours Of Tulla",
     "url": "https://thesession.org/members/179479/sets/106056",
     "date": "2025-06-07 07:12:33",
+    "tags": [
+      "boblearn"
+    ],
     "member": {
       "id": 179479,
       "name": "Barpers",
@@ -14679,6 +14760,7 @@
     "date": "2024-11-14 11:46:30",
     "tags": [
       "bobfiddle",
+      "boblearn",
       "MonThurs"
     ],
     "member": {

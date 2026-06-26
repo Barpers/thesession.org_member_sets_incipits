@@ -2,10 +2,7 @@
 __pycache__/*
 .DS_store/*
 .vscode/*
-sets_full.json
-tune_id_url_abc.json
 data/sets_full.json
-data/tune_id_url_abc.json
 logs/*
 results/*  
 .DS_Store

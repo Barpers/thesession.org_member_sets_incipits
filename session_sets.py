@@ -1,8 +1,7 @@
 import json, html, datetime
 
 
-now =( datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
-  
+now = (datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
 
 # Read the JSON
@@ -45,55 +44,28 @@ for lower, orig in sorted(all_types.items()):
 
 import re
 
-#not the same as extract_incipit in append_abc_incipits_to_sets_full.py because here we want to handle anacrusis and V: voices more robustly for arbitrary ABC input, whereas the other function is just for cleaning up the specific ABC from the API which is mostly well-formed.
 def first_two_bars(abc):
     """Extract the first 2 complete bars from an ABC string, ignoring anacrusis."""
-    # Normalise thesession's ! line-break marker to a space
     abc = abc.replace('!', ' ')
-
-    # If the ABC uses V: voice headers, extract only the first voice's content
     if 'V:' in abc:
         match = re.search(r'V:\s*\S+\s*(.*?)(?=V:\s*\S|\Z)', abc, re.DOTALL)
         abc = match.group(1).strip() if match else abc
-
     abc = abc.strip()
-
-    # Split into segments on every | (including ||, |:, :|)
     segments = re.split(r'\|', abc)
-
-    # Clean each segment: strip whitespace and bar-repeat chars (: only)
     cleaned = [re.sub(r'^[:\s]+|[:\s]+$', '', s) for s in segments]
-
-    # The first segment is anacrusis if it contains notes but is shorter than a full bar
-    # We define "has notes" as containing at least one letter (a note name)
     has_notes = lambda s: bool(re.search(r'[A-Ga-gz]', s))
-
-    bars = [s for s in cleaned if has_notes(s)]
-
-    # If the first segment was anacrusis (before the first |), it's already been
-    # separated. We just want the first 2 note-bearing segments after any leading
-    # anacrusis — but since re.split on | naturally separates them, we take
-    # the first 2 that have notes, skipping the pre-bar anacrusis only if it
-    # appears before the first real barline. 
-    # 
-    # Heuristic: if the original abc starts with notes before any |, that's anacrusis.
-    # segments[0] is always pre-first-barline content. If it has notes, it's anacrusis — skip it.
     if has_notes(cleaned[0]) if cleaned else False:
         bars = [s for s in cleaned[1:] if has_notes(s)]
     else:
         bars = [s for s in cleaned if has_notes(s)]
-
     return ' | '.join(bars[:2])
 
-# Pre-process: attach computed incipit (2 bars from full abc) to each setting
 import copy
 data_processed = copy.deepcopy(data)
 for item in data_processed:
     for setting in item.get('settings', []):
         setting['abc_two_bars'] = setting.get('abc', '')
-       # setting['abc_two_bars'] = first_two_bars(setting.get('abc', ''))
 
-# Serialize data for JS
 data_json = json.dumps(data_processed, ensure_ascii=False)
 
 HTML = f'''<!DOCTYPE html>
@@ -107,14 +79,15 @@ HTML = f'''<!DOCTYPE html>
   @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
   :root {{
-    --ink:     #1a1208;
+    --ink:       #1a1208;
     --parchment: #f5f0e8;
-    --warm-mid: #e8dfc8;
-    --rule:    #c4a96a;
-    --gold:    #9a7b2f;
-    --fade:    #7a6a50;
-    --accent:  #5c3d1e;
-    --staff-bg: #faf7f1;
+    --warm-mid:  #e8dfc8;
+    --rule:      #c4a96a;
+    --gold:      #9a7b2f;
+    --fade:      #7a6a50;
+    --accent:    #5c3d1e;
+    --staff-bg:  #faf7f1;
+    --sidebar-w: 320px;
   }}
 
   *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -125,49 +98,121 @@ HTML = f'''<!DOCTYPE html>
     font-family: 'EB Garamond', Georgia, serif;
     font-size: 17px;
     line-height: 1.55;
-  }}
-
-  header {{
-    border-bottom: 3px double var(--rule);
-    padding: 2rem 2.5rem 1.4rem;
     display: flex;
-    align-items: baseline;
-    gap: 1.5rem;
-    flex-wrap: wrap;
+    height: 100vh;
+    overflow: hidden;
   }}
 
-  header h1 {{
-    font-size: 2.2rem;
+  /* ── Sidebar ── */
+  #sidebar {{
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--warm-mid);
+    border-right: 2px double var(--rule);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.28s ease, min-width 0.28s ease, opacity 0.22s ease;
+  }}
+
+  #sidebar.collapsed {{
+    width: 0;
+    min-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    border-right: none;
+  }}
+
+  /* ── Toggle button ── */
+  #sidebar-toggle {{
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 200;
+    width: 34px;
+    height: 34px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+    background: var(--parchment);
+    color: var(--accent);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.12);
+    transition: background 0.15s, left 0.28s ease;
+  }}
+
+  #sidebar-toggle:hover {{ background: var(--warm-mid); }}
+
+  #sidebar-toggle.open {{
+    left: calc(var(--sidebar-w) + 8px);
+  }}
+
+  /* ── Sidebar header ── */
+  .sidebar-header {{
+    border-bottom: 3px double var(--rule);
+    padding: 1.2rem 1rem 1rem 3rem;
+    flex-shrink: 0;
+  }}
+
+  .sidebar-header h1 {{
+    font-size: 1.45rem;
     font-weight: 600;
     letter-spacing: -.02em;
     color: var(--accent);
-    flex: 1 1 auto;
     font-style: italic;
   }}
 
-  header h1 span {{
+  .sidebar-header h1 a {{ color: inherit; text-decoration: none; }}
+  .sidebar-header h1 a:hover {{ text-decoration: underline; text-decoration-color: var(--gold); }}
+
+  .sidebar-header h1 span {{
+    display: block;
     font-style: normal;
     color: var(--gold);
-    font-size: 1rem;
+    font-size: 0.72rem;
     font-weight: 400;
     font-family: 'JetBrains Mono', monospace;
     letter-spacing: .05em;
+    margin-top: .15rem;
   }}
 
-  /* Controls bar */
-  .controls {{
-    display: flex;
+  .sidebar-header .dl-btn {{
+    margin-top: 0.6rem;
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: .2rem .5rem;
+    cursor: pointer;
+    display: inline-flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.9rem 2.5rem;
-    background: var(--warm-mid);
-    border-bottom: 1px solid var(--rule);
-    flex-wrap: wrap;
+  }}
+
+  .sidebar-header .dl-btn:hover {{ background: var(--parchment); }}
+  .sidebar-header .dl-btn img {{ width: 18px; height: 18px; }}
+
+  /* ── Controls ── */
+  .controls {{
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }}
+
+  .control-group {{
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
   }}
 
   .control-label {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     text-transform: uppercase;
     letter-spacing: .1em;
     color: var(--fade);
@@ -177,16 +222,16 @@ HTML = f'''<!DOCTYPE html>
   .sort-group {{
     display: flex;
     gap: .3rem;
-    align-items: center;
+    flex-wrap: wrap;
   }}
 
   .sort-btn {{
     background: none;
     border: 1px solid var(--rule);
     border-radius: 3px;
-    padding: .28rem .7rem;
+    padding: .28rem .65rem;
     font-family: 'EB Garamond', serif;
-    font-size: .95rem;
+    font-size: .92rem;
     color: var(--ink);
     cursor: pointer;
     transition: background .15s, color .15s;
@@ -198,15 +243,10 @@ HTML = f'''<!DOCTYPE html>
     border-color: var(--accent);
   }}
 
-  .sort-btn:hover:not(.active) {{
-    background: var(--rule);
-    color: var(--ink);
-  }}
+  .sort-btn:hover:not(.active) {{ background: var(--rule); }}
 
-  /* Tag / Key dropdown — shared styles */
-  .tag-dropdown-wrap {{
-    position: relative;
-  }}
+  /* Tag / Key dropdown */
+  .tag-dropdown-wrap {{ position: relative; }}
 
   .tag-toggle {{
     background: none;
@@ -214,37 +254,29 @@ HTML = f'''<!DOCTYPE html>
     border-radius: 3px;
     padding: .28rem .9rem .28rem .7rem;
     font-family: 'EB Garamond', serif;
-    font-size: .95rem;
+    font-size: .92rem;
     color: var(--ink);
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: .4rem;
+    width: 100%;
     transition: background .15s;
   }}
 
-  .tag-toggle:hover {{ background: var(--warm-mid); }}
+  .tag-toggle:hover {{ background: var(--parchment); }}
   .tag-toggle.has-active {{ background: var(--accent); color: var(--parchment); border-color: var(--accent); }}
-
-  .tag-toggle::after {{
-    content: '▾';
-    font-size: .75rem;
-  }}
+  .tag-toggle::after {{ content: '▾'; font-size: .75rem; margin-left: auto; }}
 
   .tag-panel {{
     display: none;
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
     background: var(--parchment);
     border: 1px solid var(--rule);
     border-radius: 4px;
     padding: .6rem .8rem;
-    min-width: 180px;
-    max-height: 320px;
+    max-height: 220px;
     overflow-y: auto;
-    box-shadow: 0 4px 16px rgba(0,0,0,.12);
-    z-index: 100;
+    margin-top: 3px;
   }}
 
   .tag-panel.open {{ display: block; }}
@@ -254,7 +286,7 @@ HTML = f'''<!DOCTYPE html>
     align-items: center;
     gap: .45rem;
     padding: .18rem 0;
-    font-size: .95rem;
+    font-size: .92rem;
     cursor: pointer;
     white-space: nowrap;
   }}
@@ -265,9 +297,8 @@ HTML = f'''<!DOCTYPE html>
     display: block;
     margin-bottom: .5rem;
     padding-bottom: .5rem;
-    border-bottom: 1px solid var(--rule);
     font-family: 'JetBrains Mono', monospace;
-    font-size: .7rem;
+    font-size: .68rem;
     color: var(--gold);
     cursor: pointer;
     text-transform: uppercase;
@@ -275,14 +306,12 @@ HTML = f'''<!DOCTYPE html>
     background: none;
     border: none;
     border-bottom: 1px solid var(--rule);
-    padding-left: 0;
     width: 100%;
     text-align: left;
   }}
 
   .clear-tags:hover {{ color: var(--accent); }}
 
-  /* AND / OR toggle row inside each panel */
   .andor-row {{
     display: flex;
     align-items: center;
@@ -315,15 +344,8 @@ HTML = f'''<!DOCTYPE html>
     transition: background .12s, color .12s;
   }}
 
-  .andor-btn.active {{
-    background: var(--gold);
-    color: var(--parchment);
-    border-color: var(--gold);
-  }}
-
-  .andor-btn:hover:not(.active) {{
-    background: var(--warm-mid);
-  }}
+  .andor-btn.active {{ background: var(--gold); color: var(--parchment); border-color: var(--gold); }}
+  .andor-btn:hover:not(.active) {{ background: var(--warm-mid); }}
 
   /* Name search */
   .search-wrap {{
@@ -338,18 +360,14 @@ HTML = f'''<!DOCTYPE html>
     border-radius: 3px;
     padding: .28rem 1.8rem .28rem .65rem;
     font-family: 'EB Garamond', serif;
-    font-size: .95rem;
+    font-size: .92rem;
     color: var(--ink);
-    width: 180px;
+    width: 100%;
     outline: none;
-    transition: border-color .15s, width .25s;
+    transition: border-color .15s;
   }}
 
-  .search-wrap input:focus {{
-    border-color: var(--accent);
-    width: 240px;
-  }}
-
+  .search-wrap input:focus {{ border-color: var(--accent); }}
   .search-wrap input::placeholder {{ color: var(--fade); font-style: italic; }}
 
   .search-clear {{
@@ -374,31 +392,42 @@ HTML = f'''<!DOCTYPE html>
     padding: 0 1px;
   }}
 
-  /* Result count */
+  /* Result count pinned to sidebar bottom */
   #result-count {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: .75rem;
+    font-size: .68rem;
     color: var(--fade);
-    margin-left: auto;
+    padding: 0.5rem 1rem 0.8rem;
+    border-top: 1px solid var(--rule);
+    margin-top: auto;
+  }}
+
+  /* ── Main content ── */
+  #main {{
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1rem 1rem 1rem;
   }}
 
   /* Sets list */
   #sets-list {{
-    padding: 1.5rem 2.5rem 3rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    border: 2px solid #5c3d1e;
+    border-radius: 0.5em;
+    column-width: 20em;
+    column-rule: 1px solid #5c3d1e;
+    padding: 0 1rem;
   }}
 
   .set-card {{
     border-bottom: 1px solid var(--warm-mid);
     padding: 1.4rem 0 1.2rem;
+    break-inside: avoid;
   }}
 
   .set-card:last-child {{ border-bottom: none; }}
 
   .set-name {{
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 600;
     color: var(--accent);
     text-decoration: none;
@@ -407,10 +436,7 @@ HTML = f'''<!DOCTYPE html>
     margin-bottom: .7rem;
   }}
 
-  .set-name:hover {{
-    text-decoration: underline;
-    text-decoration-color: var(--gold);
-  }}
+  .set-name:hover {{ text-decoration: underline; text-decoration-color: var(--gold); }}
 
   .set-tags {{
     display: flex;
@@ -431,30 +457,13 @@ HTML = f'''<!DOCTYPE html>
     color: var(--fade);
   }}
 
-  /* Key pill — slightly distinct colour so it reads differently from tags */
-  .key-pill {{
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .65rem;
-    letter-spacing: .07em;
-    background: #ede3cc;
-    border: 1px solid var(--gold);
-    border-radius: 2px;
-    padding: .12rem .45rem;
-    color: var(--accent);
-  }}
-
-  /* Dim tunes that are filtered out by key */
   .tune-notation.key-hidden {{
     opacity: 0.22;
     filter: grayscale(0.6);
     pointer-events: none;
   }}
 
-  .tunes-list {{
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }}
+  .tunes-list {{ display: flex; flex-direction: column; gap: 0; }}
 
   .tune-notation {{
     background: var(--staff-bg);
@@ -465,13 +474,7 @@ HTML = f'''<!DOCTYPE html>
     transition: opacity .2s, filter .2s;
   }}
 
-  /* abcjs SVG overrides */
-  .tune-notation svg {{
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0;
-  }}
+  .tune-notation svg {{ max-width: 100%; height: auto; display: block; margin: 0; }}
 
   .no-results {{
     text-align: center;
@@ -482,101 +485,133 @@ HTML = f'''<!DOCTYPE html>
   }}
 
   @media (max-width: 600px) {{
-    header, .controls, #sets-list {{ padding-left: 1rem; padding-right: 1rem; }}
-    header h1 {{ font-size: 1.5rem; }}
+    #sidebar {{ --sidebar-w: 85vw; }}
+    #main {{ padding-left: 3rem; padding-right: 1rem; }}
   }}
 </style>
 </head>
 <body>
-<header>
-<button type="button"onclick="download('https://barpers.github.io/thesession.org_member_sets_incipits/data/barpers_session_sets.html', 'barpers_session_sets.html')" >
-	<img src="../images/download-icon-image.jpg"
-     	 alt="Button Image" style="width: 20px; height: 20px;">
-</button>
 
-  <h1><a href="https://thesession.org/members/179479/sets" target="_blank">Barpers Sets</a> <span>thesession.org</span></h1>
-</header>
+<!-- Toggle button — always visible -->
+<button id="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" aria-expanded="true">✕</button>
 
-<div class="controls">
-  <span class="control-label">Sort</span>
-  <div class="sort-group">
-    <button class="sort-btn active" id="btn-name-asc" onclick="setSort('name','asc')">Name ↑</button>
-    <button class="sort-btn" id="btn-name-desc" onclick="setSort('name','desc')">Name ↓</button>
-    <button class="sort-btn" id="btn-date-asc" onclick="setSort('date','asc')">Date ↑</button>
-    <button class="sort-btn" id="btn-date-desc" onclick="setSort('date','desc')">Date ↓</button>
+<!-- Sidebar: title + controls -->
+<aside id="sidebar">
+
+  <div class="sidebar-header">
+     <h1>   
+      <button type="button" class="dl-btn" title="Download HTML sets file"
+        onclick="download('https://barpers.github.io/thesession.org_member_sets_incipits/data/barpers_session_sets.html', 'barpers_session_sets.html')">
+        <img src="../images/download-icon-image.jpg" alt="Download">
+      </button> 
+      <a href="https://thesession.org/members/179479/sets" target="_blank">Barpers Sets</a>
+      <span>thesession.org</span>
+    </h1>
+ 
   </div>
 
-  <span class="control-label" style="margin-left:.5rem">Filter</span>
+  <div class="controls">
 
-  <!-- Tags dropdown (unchanged) -->
-  <div class="tag-dropdown-wrap" id="tag-wrap">
-    <button class="tag-toggle" id="tag-toggle-btn" onclick="togglePanel('tag-panel', ['key-panel','type-panel'])">Tags</button>
-    <div class="tag-panel" id="tag-panel">
-      <div class="andor-row">
-        <span class="andor-label">Match</span>
-        <button class="andor-btn active" id="tag-and-btn" onclick="setAndOr('tags','and')">AND</button>
-        <button class="andor-btn" id="tag-or-btn" onclick="setAndOr('tags','or')">OR</button>
+    <div class="control-group">
+      <span class="control-label">Sort</span>
+      <div class="sort-group">
+        <button class="sort-btn active" id="btn-name-asc" onclick="setSort('name','asc')">Name ↑</button>
+        <button class="sort-btn" id="btn-name-desc" onclick="setSort('name','desc')">Name ↓</button>
+        <button class="sort-btn" id="btn-date-asc" onclick="setSort('date','asc')">Date ↑</button>
+        <button class="sort-btn" id="btn-date-desc" onclick="setSort('date','desc')">Date ↓</button>
       </div>
-      <button class="clear-tags" onclick="clearTags()">Clear all</button>
-      {tag_options_html}
     </div>
-  </div>
 
-  <!-- Keys dropdown -->
-  <div class="tag-dropdown-wrap" id="key-wrap">
-    <button class="tag-toggle" id="key-toggle-btn" onclick="togglePanel('key-panel', ['tag-panel','type-panel'])">Keys</button>
-    <div class="tag-panel" id="key-panel">
-      <div class="andor-row">
-        <span class="andor-label">Match</span>
-        <button class="andor-btn active" id="key-and-btn" onclick="setAndOr('keys','and')">AND</button>
-        <button class="andor-btn" id="key-or-btn" onclick="setAndOr('keys','or')">OR</button>
+    <div class="control-group">
+      <span class="control-label">Tags</span>
+      <div class="tag-dropdown-wrap" id="tag-wrap">
+        <button class="tag-toggle" id="tag-toggle-btn" onclick="togglePanel('tag-panel', ['key-panel','type-panel'])">Tags</button>
+        <div class="tag-panel" id="tag-panel">
+          <div class="andor-row">
+            <span class="andor-label">Match</span>
+            <button class="andor-btn active" id="tag-and-btn" onclick="setAndOr('tags','and')">AND</button>
+            <button class="andor-btn" id="tag-or-btn" onclick="setAndOr('tags','or')">OR</button>
+          </div>
+          <button class="clear-tags" onclick="clearTags()">Clear all</button>
+          {tag_options_html}
+        </div>
       </div>
-      <button class="clear-tags" onclick="clearKeys()">Clear all</button>
-      {key_options_html}
     </div>
-  </div>
 
-  <!-- Type dropdown (new) -->
-  <div class="tag-dropdown-wrap" id="type-wrap">
-    <button class="tag-toggle" id="type-toggle-btn" onclick="togglePanel('type-panel', ['tag-panel','key-panel'])">Type</button>
-    <div class="tag-panel" id="type-panel">
-      <div class="andor-row">
-        <span class="andor-label">Match</span>
-        <button class="andor-btn active" id="type-and-btn" onclick="setAndOr('types','and')">AND</button>
-        <button class="andor-btn" id="type-or-btn" onclick="setAndOr('types','or')">OR</button>
+    <div class="control-group">
+      <span class="control-label">Keys</span>
+      <div class="tag-dropdown-wrap" id="key-wrap">
+        <button class="tag-toggle" id="key-toggle-btn" onclick="togglePanel('key-panel', ['tag-panel','type-panel'])">Keys</button>
+        <div class="tag-panel" id="key-panel">
+          <div class="andor-row">
+            <span class="andor-label">Match</span>
+            <button class="andor-btn active" id="key-and-btn" onclick="setAndOr('keys','and')">AND</button>
+            <button class="andor-btn" id="key-or-btn" onclick="setAndOr('keys','or')">OR</button>
+          </div>
+          <button class="clear-tags" onclick="clearKeys()">Clear all</button>
+          {key_options_html}
+        </div>
       </div>
-      <button class="clear-tags" onclick="clearTypes()">Clear all</button>
-      {type_options_html}
     </div>
-  </div>
 
-  <span class="control-label" style="margin-left:.5rem">Search</span>
-  <div class="search-wrap">
-    <input type="search" id="name-search" placeholder="tune name…" oninput="onSearch(this)" autocomplete="off">
-    <button class="search-clear" id="search-clear-btn" onclick="clearSearch()" title="Clear">✕</button>
-  </div>
+    <div class="control-group">
+      <span class="control-label">Type</span>
+      <div class="tag-dropdown-wrap" id="type-wrap">
+        <button class="tag-toggle" id="type-toggle-btn" onclick="togglePanel('type-panel', ['tag-panel','key-panel'])">Type</button>
+        <div class="tag-panel" id="type-panel">
+          <div class="andor-row">
+            <span class="andor-label">Match</span>
+            <button class="andor-btn active" id="type-and-btn" onclick="setAndOr('types','and')">AND</button>
+            <button class="andor-btn" id="type-or-btn" onclick="setAndOr('types','or')">OR</button>
+          </div>
+          <button class="clear-tags" onclick="clearTypes()">Clear all</button>
+          {type_options_html}
+        </div>
+      </div>
+    </div>
 
-  <span id="result-count"></span>
-</div>
-</body>
-<body  style="border:2px solid  #5c3d1e; border-radius: 0.5em; padding: -5px;
-    column-width: 28em; 
-    column-rule: 1px solid  #5c3d1e;
-    padding-left: 0px;">
-<div id="sets-list"></div>
+    <div class="control-group">
+      <span class="control-label">Search</span>
+      <div class="search-wrap">
+        <input type="search" id="name-search" placeholder="tune name…" oninput="onSearch(this)" autocomplete="off">
+        <button class="search-clear" id="search-clear-btn" onclick="clearSearch()" title="Clear">✕</button>
+      </div>
+    </div>
+
+  </div><!-- /controls -->
+
+  <div id="result-count"></div>
+
+</aside>
+
+<!-- Main scrollable area -->
+<main id="main">
+  <div id="sets-list"></div>
+</main>
 
 <script>
 const RAW = {data_json};
 
 let sortField = 'name';
 let sortDir   = 'asc';
-let activeTags = new Set();
-let activeKeys = new Set();
+let activeTags  = new Set();
+let activeKeys  = new Set();
 let activeTypes = new Set();
-let tagsMode  = 'and'; // 'and' | 'or'
+let tagsMode  = 'and';
 let keysMode  = 'and';
 let typesMode = 'and';
 let searchQuery = '';
+let sidebarOpen = true;
+
+function toggleSidebar() {{
+  sidebarOpen = !sidebarOpen;
+  const sidebar = document.getElementById('sidebar');
+  const btn = document.getElementById('sidebar-toggle');
+  sidebar.classList.toggle('collapsed', !sidebarOpen);
+  btn.classList.toggle('open', sidebarOpen);
+  btn.setAttribute('aria-expanded', sidebarOpen);
+  btn.textContent = sidebarOpen ? '✕' : '☰';
+}}
 
 // Close all panels when clicking outside
 document.addEventListener('click', e => {{
@@ -599,7 +634,6 @@ function setAndOr(filter, mode) {{
   if (filter === 'tags')  {{ tagsMode  = mode; }}
   if (filter === 'keys')  {{ keysMode  = mode; }}
   if (filter === 'types') {{ typesMode = mode; }}
-  // Update button highlight
   ['and','or'].forEach(m => {{
     const btn = document.getElementById(`${{filter.slice(0,-1)}}-${{m}}-btn`);
     if (btn) btn.classList.toggle('active', m === mode);
@@ -618,7 +652,6 @@ function setSort(field, dir) {{
 }}
 
 function applyFilters() {{
-  // Tags
   activeTags = new Set();
   document.querySelectorAll('#tag-panel .tag-option input:checked').forEach(cb => {{
     activeTags.add(cb.value);
@@ -627,7 +660,6 @@ function applyFilters() {{
   tagBtn.classList.toggle('has-active', activeTags.size > 0);
   tagBtn.textContent = activeTags.size > 0 ? `Tags (${{activeTags.size}})` : 'Tags';
 
-  // Keys
   activeKeys = new Set();
   document.querySelectorAll('#key-panel .tag-option input:checked').forEach(cb => {{
     activeKeys.add(cb.value);
@@ -636,7 +668,6 @@ function applyFilters() {{
   keyBtn.classList.toggle('has-active', activeKeys.size > 0);
   keyBtn.textContent = activeKeys.size > 0 ? `Keys (${{activeKeys.size}})` : 'Keys';
 
-  // Types
   activeTypes = new Set();
   document.querySelectorAll('#type-panel .tag-option input:checked').forEach(cb => {{
     activeTypes.add(cb.value);
@@ -648,20 +679,9 @@ function applyFilters() {{
   render();
 }}
 
-function clearTags() {{
-  document.querySelectorAll('#tag-panel .tag-option input').forEach(cb => cb.checked = false);
-  applyFilters();
-}}
-
-function clearKeys() {{
-  document.querySelectorAll('#key-panel .tag-option input').forEach(cb => cb.checked = false);
-  applyFilters();
-}}
-
-function clearTypes() {{
-  document.querySelectorAll('#type-panel .tag-option input').forEach(cb => cb.checked = false);
-  applyFilters();
-}}
+function clearTags()  {{ document.querySelectorAll('#tag-panel .tag-option input').forEach(cb => cb.checked = false); applyFilters(); }}
+function clearKeys()  {{ document.querySelectorAll('#key-panel .tag-option input').forEach(cb => cb.checked = false); applyFilters(); }}
+function clearTypes() {{ document.querySelectorAll('#type-panel .tag-option input').forEach(cb => cb.checked = false); applyFilters(); }}
 
 function onSearch(input) {{
   searchQuery = input.value.trim().toLowerCase();
@@ -670,8 +690,7 @@ function onSearch(input) {{
 }}
 
 function clearSearch() {{
-  const input = document.getElementById('name-search');
-  input.value = '';
+  document.getElementById('name-search').value = '';
   searchQuery = '';
   document.getElementById('search-clear-btn').style.display = 'none';
   render();
@@ -693,22 +712,18 @@ function highlight(text, query) {{
 // Source - https://stackoverflow.com/a/76101203
 // Posted by enisn
 // Retrieved 2026-06-22, License - CC BY-SA 4.0
-
 async function download(dataurl, fileName) {{
-    const response = await fetch(dataurl);
-    const blob = await response.blob();
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = fileName;
-    link.click();
+  const response = await fetch(dataurl);
+  const blob = await response.blob();
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  link.click();
 }}
 
 function render() {{
   let items = RAW.slice();
 
-  // Filter by tags
-  // AND: set must carry every active tag
-  // OR:  set must carry at least one active tag
   if (activeTags.size > 0) {{
     items = items.filter(item => {{
       const itemTags = (item.tags || []).map(t => t.toLowerCase());
@@ -718,9 +733,6 @@ function render() {{
     }});
   }}
 
-  // Filter by keys
-  // AND: set must contain tunes covering every active key
-  // OR:  set must contain at least one tune matching any active key
   if (activeKeys.size > 0) {{
     items = items.filter(item => {{
       const settingKeys = (item.settings || []).map(s => (s.key || '').toLowerCase());
@@ -730,9 +742,6 @@ function render() {{
     }});
   }}
 
-  // Filter by type
-  // AND: set must contain tunes covering every active type
-  // OR:  set must contain at least one tune matching any active type
   if (activeTypes.size > 0) {{
     items = items.filter(item => {{
       const settingTypes = (item.settings || []).map(s => (s.type || '').toLowerCase());
@@ -742,7 +751,6 @@ function render() {{
     }});
   }}
 
-  // Filter by search query (matches set name OR any tune name)
   if (searchQuery) {{
     items = items.filter(item => {{
       if (item.name.toLowerCase().includes(searchQuery)) return true;
@@ -750,7 +758,6 @@ function render() {{
     }});
   }}
 
-  // Sort
   items.sort((a, b) => {{
     let va = sortField === 'name' ? a.name.toLowerCase() : a.date;
     let vb = sortField === 'name' ? b.name.toLowerCase() : b.date;
@@ -759,7 +766,7 @@ function render() {{
     return 0;
   }});
 
-  document.getElementById('result-count').textContent = `${{items.length}} of ${{RAW.length}} sets.  {now}`;
+  document.getElementById('result-count').textContent = `${{items.length}} of ${{RAW.length}} sets · {now}`;
   const container = document.getElementById('sets-list');
   container.innerHTML = '';
 
@@ -772,7 +779,6 @@ function render() {{
     const card = document.createElement('div');
     card.className = 'set-card';
 
-    // Name link
     const a = document.createElement('a');
     a.className = 'set-name';
     a.href = item.url;
@@ -781,7 +787,6 @@ function render() {{
     a.appendChild(highlight(item.name, searchQuery));
     card.appendChild(a);
 
-    // Tags row
     if (item.tags && item.tags.length > 0) {{
       const tagsDiv = document.createElement('div');
       tagsDiv.className = 'set-tags';
@@ -794,7 +799,6 @@ function render() {{
       card.appendChild(tagsDiv);
     }}
 
-    // Tunes
     const tunesDiv = document.createElement('div');
     tunesDiv.className = 'tunes-list';
 
@@ -802,11 +806,6 @@ function render() {{
       const notationDiv = document.createElement('div');
       notationDiv.className = 'tune-notation';
 
-      // Dim tunes that don't contribute to the active key/type filters.
-      // In OR mode a tune is relevant if it matches any selected value.
-      // In AND mode a tune is relevant if it matches all selected values
-      // (a single tune can only be in one key/type, so AND across >1 value
-      // always dims it — which is correct: no single tune satisfies both).
       const tuneKey  = (setting.key  || '').toLowerCase();
       const tuneType = (setting.type || '').toLowerCase();
       const keyDim  = activeKeys.size  > 0 && !activeKeys.has(tuneKey);
@@ -847,6 +846,8 @@ function render() {{
   }});
 }}
 
+// Sidebar toggle button starts in open state
+document.getElementById('sidebar-toggle').classList.add('open');
 render();
 </script>
 </body>
