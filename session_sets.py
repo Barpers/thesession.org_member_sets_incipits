@@ -466,7 +466,7 @@ HTML = f'''<!DOCTYPE html>
 
   .tune-notation {{
     background: var(--staff-bg);
-    border-left: 3px solid var(--rule);
+    border-left: 1px solid var(--rule);
     padding: 0 .8rem;
     border-radius: 0 3px 3px 0;
     overflow-x: auto;
