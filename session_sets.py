@@ -406,14 +406,13 @@ HTML = f'''<!DOCTYPE html>
   #main {{
     flex: 1;
     overflow-y: auto;
-    padding: 1rem 1rem 1rem 1rem;
   }}
 
   /* Sets list */
   #sets-list {{
     border: 2px solid #5c3d1e;
     border-radius: 0.5em;
-    column-width: 20em;
+    column-width: 18em;
     column-rule: 1px solid #5c3d1e;
     padding: 0 1rem;
   }}
