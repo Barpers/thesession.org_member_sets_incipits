@@ -36,13 +36,19 @@ import urllib.request
 import urllib.error
 from fractions import Fraction
 from pathlib import Path
+import sys
 
-SETS_FILE  = Path("./data/sets_full.json")
+
+default_member_id = 179479 #barper's member ID
+arg = sys.argv[1] if len(sys.argv) > 1 else str(default_member_id)
+
+
+SETS_FILE  = Path("./data/" + arg + "_sets_full.json")
 #SETS_FILE  = Path("./data/sets_test.json")  # for testing
 CACHE_FILE = Path("./data/tune_id_url_abc.json")
 #CACHE_FILE = Path("./data/tune_id_url_abc_test.json")  # for testing
 CACHE_FILE.touch(exist_ok=True)  # ensure it exists before reading
-API_DELAY  = 0.5  # seconds between outbound API calls
+API_DELAY  = 0.3  # seconds between outbound API calls
 
 
 # ── incipit ────────────────────────────────────────────────────────────────────

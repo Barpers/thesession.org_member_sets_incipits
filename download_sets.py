@@ -7,8 +7,11 @@ import urllib.parse
 import json
 import sys
 
+default_member_id = 179479 #barper's member ID
+arg = sys.argv[1] if len(sys.argv) > 1 else str(default_member_id)
+
 # API endpoint
-base_url = "https://thesession.org/members/179479/sets"
+base_url = f"https://thesession.org/members/{arg}/sets"
 
 all_sets = []
 total_pages = 1
@@ -18,11 +21,13 @@ print(f"Starting download from {base_url}...")
 
 try:
     # Fetch the first page to determine total pages
+
+
     params = urllib.parse.urlencode({
         "perpage": 50,
         "format": "json",
-        "page": current_page
-    })
+        "page": 1
+        })
     url = f"{base_url}?{params}"
     
     with urllib.request.urlopen(url, timeout=10) as response:
@@ -54,8 +59,9 @@ try:
             all_sets.extend(page_data["sets"])
             print(f"Page {page_num}: Downloaded {len(page_data['sets'])} sets")
     
+
     # Save to file
-    output_file = "./data/sets_full.json"
+    output_file = f"./data/" + str(arg) + "_sets_full.json"
     with open(output_file, "w") as f:
         json.dump(all_sets, f, indent=2)
     

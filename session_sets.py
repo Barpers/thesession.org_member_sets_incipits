@@ -1,14 +1,19 @@
-import json, html, datetime
+import json, html, datetime, sys
 
 
 now = (datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
 
+default_member_id = 179479 #barper's member ID
+arg = sys.argv[1] if len(sys.argv) > 1 else str(default_member_id)
+
+
 # Read the JSON
-with open('./data/sets_full.json', 'r', encoding='utf-8') as f:
+with open('./data/' + arg + '_sets_full.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 # Collect all unique tags (case-insensitive, preserve original for display)
+member_name = data[0].get('member', {}).get('name', 'Unknown Member')
 all_tags = {}
 for item in data:
     for tag in item.get('tags', []):
@@ -500,10 +505,10 @@ HTML = f'''<!DOCTYPE html>
   <div class="sidebar-header">
      <h1>   
       <button type="button" class="dl-btn" title="Download HTML sets file"
-        onclick="download('https://barpers.github.io/thesession.org_member_sets_incipits/data/barpers_session_sets.html', 'barpers_session_sets.html')">
+        onclick="download('https://barpers.github.io/thesession.org_member_sets_incipits/data/{member_name}_session_sets.html', '{member_name}_session_sets.html')">
         <img src="../images/download-icon-image.jpg" alt="Download">
       </button> 
-      <a href="https://thesession.org/members/179479/sets" target="_blank">Barpers Sets</a>
+      <a href="https://thesession.org/members/179479/sets" target="_blank">{member_name} Sets</a>
       <span>thesession.org</span>
     </h1>
  
@@ -852,7 +857,7 @@ render();
 </body>
 </html>'''
 
-output_path = './data/barpers_session_sets.html'
+output_path = f'./data/{member_name}_session_sets.html'
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(HTML)
 

@@ -1,5 +1,1122 @@
 [
   {
+    "id": 141873,
+    "name": "The Killarney Boys Of Pleasure, The Bag Of Spuds",
+    "url": "https://thesession.org/members/179479/sets/141873",
+    "date": "2026-07-01 01:30:27",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 733,
+        "name": "The Killarney Boys Of Pleasure",
+        "url": "https://thesession.org/tunes/733#setting733",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Emin",
+        "abc": "|: E2 F/E/D E2 FA | BFAF DEFA |"
+      },
+      {
+        "id": 13567,
+        "name": "The Bag Of Spuds",
+        "url": "https://thesession.org/tunes/579#setting13567",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Ador",
+        "abc": "|: A2eA cAeA | ABcd eBdB |"
+      }
+    ]
+  },
+  {
+    "id": 141872,
+    "name": "The Three Sea Captains, Tripping Up The Stairs",
+    "url": "https://thesession.org/members/179479/sets/141872",
+    "date": "2026-07-01 01:16:02",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 48198,
+        "name": "The Three Sea Captains",
+        "url": "https://thesession.org/tunes/147#setting48198",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Gmaj",
+        "abc": "\"G\"GDG BGB | \"D\"c2 A F2 A | \"G\"GDG BGB |"
+      },
+      {
+        "id": 42072,
+        "name": "Tripping Up The Stairs",
+        "url": "https://thesession.org/tunes/111#setting42072",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Dmaj",
+        "abc": "|: FAA GBB | FAd fed | cBc ABc |"
+      }
+    ]
+  },
+  {
+    "id": 141865,
+    "name": "Father Kelly's, Jenny's Chickens",
+    "url": "https://thesession.org/members/179479/sets/141865",
+    "date": "2026-06-30 22:49:13",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 791,
+        "name": "Father Kelly's",
+        "url": "https://thesession.org/tunes/791#setting791",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmaj",
+        "abc": "|: de | f2 df edBd | Addc defa |"
+      },
+      {
+        "id": 756,
+        "name": "Jenny's Chickens",
+        "url": "https://thesession.org/tunes/756#setting756",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Bmin",
+        "abc": "|: f2{a}fg fece | fefa eAce |"
+      }
+    ]
+  },
+  {
+    "id": 141810,
+    "name": "Timmy's",
+    "url": "https://thesession.org/members/179479/sets/141810",
+    "date": "2026-06-30 14:05:02",
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 33286,
+        "name": "Timmy's",
+        "url": "https://thesession.org/tunes/17355#setting33286",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Gmaj",
+        "abc": "|: DDBA GGGE | DDBA GGGG |"
+      }
+    ]
+  },
+  {
+    "id": 141781,
+    "name": "Toss The Feathers, Jenny's Chickens",
+    "url": "https://thesession.org/members/179479/sets/141781",
+    "date": "2026-06-29 23:14:37",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 138,
+        "name": "Toss The Feathers",
+        "url": "https://thesession.org/tunes/138#setting138",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmix",
+        "abc": "|: D2 FD ADFD | ABcA G~E3 |"
+      },
+      {
+        "id": 756,
+        "name": "Jenny's Chickens",
+        "url": "https://thesession.org/tunes/756#setting756",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Bmin",
+        "abc": "|: f2{a}fg fece | fefa eAce |"
+      }
+    ]
+  },
+  {
+    "id": 141716,
+    "name": "The Rakes Of Mallow, Cock O' The North, John Ryan's",
+    "url": "https://thesession.org/members/179479/sets/141716",
+    "date": "2026-06-29 04:10:27",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 50935,
+        "name": "The Rakes Of Mallow",
+        "url": "https://thesession.org/tunes/85#setting50935",
+        "type": "polka",
+        "meter": "2/4",
+        "key": "Gmaj",
+        "abc": "|: D | GB GB | GB c/B/A/G/ |"
+      },
+      {
+        "id": 1218,
+        "name": "Cock O' The North",
+        "url": "https://thesession.org/tunes/1218#setting1218",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Amix",
+        "abc": "|: cdc cBA | cde f2e | cdc cBA |"
+      },
+      {
+        "id": 13305,
+        "name": "John Ryan's",
+        "url": "https://thesession.org/tunes/441#setting13305",
+        "type": "polka",
+        "meter": "2/4",
+        "key": "Dmaj",
+        "abc": "|: dd B/c/d/B/ | AF AF | dd B/c/d/B/ |"
+      }
+    ]
+  },
+  {
+    "id": 141715,
+    "name": "The Rights Of Man, King Of The Fairies",
+    "url": "https://thesession.org/members/179479/sets/141715",
+    "date": "2026-06-29 04:06:49",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 50166,
+        "name": "The Rights Of Man",
+        "url": "https://thesession.org/tunes/83#setting50166",
+        "type": "hornpipe",
+        "meter": "4/4",
+        "key": "Emin",
+        "abc": "|: GA | BcAB GAFG | EFGA B2 ef |"
+      },
+      {
+        "id": 57130,
+        "name": "King Of The Fairies",
+        "url": "https://thesession.org/tunes/475#setting57130",
+        "type": "hornpipe",
+        "meter": "4/4",
+        "key": "Emin",
+        "abc": "|: B,2 | \"Em\"EDEF GFGA | \"Em\"BcBA GFGA |"
+      }
+    ]
+  },
+  {
+    "id": 141713,
+    "name": "Eleanor Plunkett",
+    "url": "https://thesession.org/members/179479/sets/141713",
+    "date": "2026-06-29 02:53:58",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 2575,
+        "name": "Eleanor Plunkett",
+        "url": "https://thesession.org/tunes/2575#setting2575",
+        "type": "waltz",
+        "meter": "3/4",
+        "key": "Gmaj",
+        "abc": "GA | B2B2AG | G2G2ag |"
+      }
+    ]
+  },
+  {
+    "id": 141712,
+    "name": "The Woman Of The House, The Man Of The House",
+    "url": "https://thesession.org/members/179479/sets/141712",
+    "date": "2026-06-29 02:46:49",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 46283,
+        "name": "The Woman Of The House",
+        "url": "https://thesession.org/tunes/321#setting46283",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Gmaj",
+        "abc": "|: DBBA B2BA | GABd eBdB |"
+      },
+      {
+        "id": 12907,
+        "name": "The Man Of The House",
+        "url": "https://thesession.org/tunes/222#setting12907",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Edor",
+        "abc": "|: E2 BE GABG | E/E/E BG FDAF |"
+      }
+    ]
+  },
+  {
+    "id": 141711,
+    "name": "Within A Mile Of Dublin, My Love Is In America",
+    "url": "https://thesession.org/members/179479/sets/141711",
+    "date": "2026-06-29 02:43:29",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 125,
+        "name": "Within A Mile Of Dublin",
+        "url": "https://thesession.org/tunes/125#setting125",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmix",
+        "abc": "FG | AD (3DDD FEFG | AD (3DDD c2 BG |"
+      },
+      {
+        "id": 52535,
+        "name": "My Love Is In America",
+        "url": "https://thesession.org/tunes/77#setting52535",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Gmaj",
+        "abc": "|: E | FEFG ABcB | Ad~d2 Ad d2 |"
+      }
+    ]
+  },
+  {
+    "id": 141710,
+    "name": "The Virginia, Drag Her Round The Road",
+    "url": "https://thesession.org/members/179479/sets/141710",
+    "date": "2026-06-29 02:38:50",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 812,
+        "name": "The Virginia",
+        "url": "https://thesession.org/tunes/812#setting812",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmaj",
+        "abc": "|: DBBA ~B3A | BAdB AFEF |"
+      },
+      {
+        "id": 1148,
+        "name": "Drag Her Round The Road",
+        "url": "https://thesession.org/tunes/1148#setting1148",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Emin",
+        "abc": "|: BEED E2GE | E2GE DEGA |"
+      }
+    ]
+  },
+  {
+    "id": 141709,
+    "name": "Tuttle's, The Gravel Walks",
+    "url": "https://thesession.org/members/179479/sets/141709",
+    "date": "2026-06-29 02:31:25",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 528,
+        "name": "Tuttle's",
+        "url": "https://thesession.org/tunes/528#setting528",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Ddor",
+        "abc": "|: A,DDE FEFG | A2Gc Ad~d2 |"
+      },
+      {
+        "id": 39424,
+        "name": "The Gravel Walks",
+        "url": "https://thesession.org/tunes/42#setting39424",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Ador",
+        "abc": "|: \"Am\"A2 eA BA eA | A2 eA \"G\"BA GB |"
+      }
+    ]
+  },
+  {
+    "id": 141707,
+    "name": "Tatter Jack Walsh, The Cook In The Kitchen, The Blackthorn Stick",
+    "url": "https://thesession.org/members/179479/sets/141707",
+    "date": "2026-06-29 02:15:11",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 1638,
+        "name": "Tatter Jack Walsh",
+        "url": "https://thesession.org/tunes/1638#setting1638",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Dmix",
+        "abc": "|: fef ded | cAB c2 A | dcA GFG |"
+      },
+      {
+        "id": 48500,
+        "name": "The Cook In The Kitchen",
+        "url": "https://thesession.org/tunes/808#setting48500",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Gmaj",
+        "abc": "|: E | \"G\"DGG GAG | \"D\"FDE \"F\"=F2E |"
+      },
+      {
+        "id": 702,
+        "name": "The Blackthorn Stick",
+        "url": "https://thesession.org/tunes/702#setting702",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Gmaj",
+        "abc": "|: d | gfg ege | dBG AGE |"
+      }
+    ]
+  },
+  {
+    "id": 141706,
+    "name": "The Tarbolton, The Longford Collector, The Sailor's Bonnet",
+    "url": "https://thesession.org/members/179479/sets/141706",
+    "date": "2026-06-29 02:11:04",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 55401,
+        "name": "The Tarbolton",
+        "url": "https://thesession.org/tunes/560#setting55401",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Edor",
+        "abc": "D |: \"Em\" Eeed e2 BA | GBAF GFEF |"
+      },
+      {
+        "id": 54139,
+        "name": "The Longford Collector",
+        "url": "https://thesession.org/tunes/563#setting54139",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Gmaj",
+        "abc": "|: G2 GA Bddd | eB ~B2 eBdB |"
+      },
+      {
+        "id": 45188,
+        "name": "The Sailor's Bonnet",
+        "url": "https://thesession.org/tunes/570#setting45188",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmaj",
+        "abc": "B |: A2 FA dfef | dfef dB B2 |"
+      }
+    ]
+  },
+  {
+    "id": 141705,
+    "name": "The Swallowtail, The Cliffs Of Moher",
+    "url": "https://thesession.org/members/179479/sets/141705",
+    "date": "2026-06-29 02:05:27",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 12679,
+        "name": "The Swallowtail",
+        "url": "https://thesession.org/tunes/106#setting12679",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Edor",
+        "abc": "|: GEE BEE | GEE BAG | FDD ADD |"
+      },
+      {
+        "id": 32781,
+        "name": "The Cliffs Of Moher",
+        "url": "https://thesession.org/tunes/12#setting32781",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Ador",
+        "abc": "|: a2a bag | eaf ged | c2A BAG |"
+      }
+    ]
+  },
+  {
+    "id": 141704,
+    "name": "The Swallow's Tail, Love At The Endings",
+    "url": "https://thesession.org/members/179479/sets/141704",
+    "date": "2026-06-29 02:02:43",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 22735,
+        "name": "The Swallow's Tail",
+        "url": "https://thesession.org/tunes/105#setting22735",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Ador",
+        "abc": "|: gf | eAcA eAcA | Bdef gedB |"
+      },
+      {
+        "id": 14194,
+        "name": "Love At The Endings",
+        "url": "https://thesession.org/tunes/990#setting14194",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmaj",
+        "abc": "|: DEFA B2 dB | A~F3 BFAF |"
+      }
+    ]
+  },
+  {
+    "id": 141702,
+    "name": "The Sligo Maid, The Sally Gardens",
+    "url": "https://thesession.org/members/179479/sets/141702",
+    "date": "2026-06-29 01:55:03",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 55397,
+        "name": "The Sligo Maid",
+        "url": "https://thesession.org/tunes/399#setting55397",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Ador",
+        "abc": "|: \"Am\"A2BA (3Bcd ef | gedB AGEF |"
+      },
+      {
+        "id": 48123,
+        "name": "The Sally Gardens",
+        "url": "https://thesession.org/tunes/98#setting48123",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Gmaj",
+        "abc": "BA |: \"G\"G2DG B2GB | dBeB dBAB |"
+      }
+    ]
+  },
+  {
+    "id": 141701,
+    "name": "The Ships Are Sailing, The Cup Of Tea",
+    "url": "https://thesession.org/members/179479/sets/141701",
+    "date": "2026-06-29 01:51:36",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 53493,
+        "name": "The Ships Are Sailing",
+        "url": "https://thesession.org/tunes/543#setting53493",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Edor",
+        "abc": "|: Beed BcdB | AD (3FED a,D (3FED |"
+      },
+      {
+        "id": 23896,
+        "name": "The Cup Of Tea",
+        "url": "https://thesession.org/tunes/20#setting23896",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Edor",
+        "abc": "|: \"Em\"BAGF GEEF | \"Em\"GEBE GEE/E/E |"
+      }
+    ]
+  },
+  {
+    "id": 141700,
+    "name": "Saint Anne's, The Concertina",
+    "url": "https://thesession.org/members/179479/sets/141700",
+    "date": "2026-06-29 01:48:36",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 12666,
+        "name": "Saint Anne's",
+        "url": "https://thesession.org/tunes/103#setting12666",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmaj",
+        "abc": "|: de | fedf edcB | ~A2 FA DAFA |"
+      },
+      {
+        "id": 47029,
+        "name": "The Concertina",
+        "url": "https://thesession.org/tunes/18#setting47029",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmaj",
+        "abc": "|: A2FA BAFA | A2FA BAFA |"
+      }
+    ]
+  },
+  {
+    "id": 141699,
+    "name": "Saddle The Pony, Tripping Up The Stairs, The Tenpenny Bit",
+    "url": "https://thesession.org/members/179479/sets/141699",
+    "date": "2026-06-29 01:44:50",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 55395,
+        "name": "Saddle The Pony",
+        "url": "https://thesession.org/tunes/307#setting55395",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Gmaj",
+        "abc": "|: D | \"G\"GBA G2B | \"G\"def gdB |"
+      },
+      {
+        "id": 42072,
+        "name": "Tripping Up The Stairs",
+        "url": "https://thesession.org/tunes/111#setting42072",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Dmaj",
+        "abc": "|: FAA GBB | FAd fed | cBc ABc |"
+      },
+      {
+        "id": 55706,
+        "name": "The Tenpenny Bit",
+        "url": "https://thesession.org/tunes/109#setting55706",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Ador",
+        "abc": "gf |: \"Am\"eAA eAA | \"G\"BAB \"Em\"GBd |"
+      }
+    ]
+  },
+  {
+    "id": 141697,
+    "name": "The Rakes Of Kildare, The Blackthorn Stick, Lanigan's Ball",
+    "url": "https://thesession.org/members/179479/sets/141697",
+    "date": "2026-06-29 00:34:01",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 36242,
+        "name": "The Rakes Of Kildare",
+        "url": "https://thesession.org/tunes/84#setting36242",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Gmaj",
+        "abc": "|: EAAAGA | Bcde2f | gfgege |"
+      },
+      {
+        "id": 49484,
+        "name": "The Blackthorn Stick",
+        "url": "https://thesession.org/tunes/702#setting49484",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Gmaj",
+        "abc": "|: d | \"G\"gfg \"C\"ege | \"G\"dBG \"C\"AGE |"
+      },
+      {
+        "id": 23888,
+        "name": "Lanigan's Ball",
+        "url": "https://thesession.org/tunes/264#setting23888",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Emin",
+        "abc": "|: EFE G2A | B2A B^cd | D2E F2G |"
+      }
+    ]
+  },
+  {
+    "id": 141696,
+    "name": "The Old Copperplate, The Congress, Down The Broom",
+    "url": "https://thesession.org/members/179479/sets/141696",
+    "date": "2026-06-29 00:29:48",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 410,
+        "name": "The Old Copperplate",
+        "url": "https://thesession.org/tunes/410#setting410",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Ador",
+        "abc": "|: A2 EA cAAe | aged cAFA |"
+      },
+      {
+        "id": 46634,
+        "name": "The Congress",
+        "url": "https://thesession.org/tunes/208#setting46634",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Ador",
+        "abc": "|: \"Am\"eAAG ABcd | \"Am\"eaaf \"G\"gedg |"
+      },
+      {
+        "id": 47567,
+        "name": "Down The Broom",
+        "url": "https://thesession.org/tunes/514#setting47567",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Ador",
+        "abc": "|: \"Am\"EAAG A2Bd | \"Em\"eg g/g/g egdc |"
+      }
+    ]
+  },
+  {
+    "id": 141695,
+    "name": "The Mist Covered Mountain, The Walls Of Liscarrol, The Geese In The Bog",
+    "url": "https://thesession.org/members/179479/sets/141695",
+    "date": "2026-06-29 00:24:52",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 55366,
+        "name": "The Mist Covered Mountain",
+        "url": "https://thesession.org/tunes/256#setting55366",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Ador",
+        "abc": "|: G | \"Am\"EAA ABd | e2 A AGE |"
+      },
+      {
+        "id": 29032,
+        "name": "The Walls Of Liscarrol",
+        "url": "https://thesession.org/tunes/232#setting29032",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Ddor",
+        "abc": "|: dcA AGE | GED D2E | GEE cEE |"
+      },
+      {
+        "id": 55355,
+        "name": "The Geese In The Bog",
+        "url": "https://thesession.org/tunes/43#setting55355",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Amin",
+        "abc": "|: B | \"C\"cEE \"G\"GEE | \"C\"cEE GAB |"
+      }
+    ]
+  },
+  {
+    "id": 141694,
+    "name": "The Mason's Apron, The High",
+    "url": "https://thesession.org/members/179479/sets/141694",
+    "date": "2026-06-29 00:19:38",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 74,
+        "name": "The Mason's Apron",
+        "url": "https://thesession.org/tunes/74#setting74",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Amaj",
+        "abc": "|: e2 | aAA2 ABAF | EFAc dcBA |"
+      },
+      {
+        "id": 44,
+        "name": "The High",
+        "url": "https://thesession.org/tunes/44#setting44",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Amix",
+        "abc": "|: a2 fa ec A2 | cAeA fAeA |"
+      }
+    ]
+  },
+  {
+    "id": 141693,
+    "name": "The Maids Of Mitchelstown, Lady Anne Montgomery",
+    "url": "https://thesession.org/members/179479/sets/141693",
+    "date": "2026-06-29 00:15:46",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 120,
+        "name": "The Maids Of Mitchelstown",
+        "url": "https://thesession.org/tunes/120#setting120",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmin",
+        "abc": "|: D2AG EEG2 | A2GA cAGE |"
+      },
+      {
+        "id": 53451,
+        "name": "Lady Anne Montgomery",
+        "url": "https://thesession.org/tunes/59#setting53451",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmaj",
+        "abc": "|: FADA FADA | FAdA BABc |"
+      }
+    ]
+  },
+  {
+    "id": 141692,
+    "name": "The Maid Behind The Bar, The Teetotaller's, The High",
+    "url": "https://thesession.org/members/179479/sets/141692",
+    "date": "2026-06-29 00:02:17",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 21781,
+        "name": "The Maid Behind The Bar",
+        "url": "https://thesession.org/tunes/64#setting21781",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmaj",
+        "abc": "zE |: \"D\"FAAB AFED | \"D\"FAAB A2de |"
+      },
+      {
+        "id": 40745,
+        "name": "The Teetotaller's",
+        "url": "https://thesession.org/tunes/114#setting40745",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Gmaj",
+        "abc": "|: (3DEF | G2GF GABc | d2ec dBAc |"
+      },
+      {
+        "id": 44,
+        "name": "The High",
+        "url": "https://thesession.org/tunes/44#setting44",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Amix",
+        "abc": "|: a2 fa ec A2 | cAeA fAeA |"
+      }
+    ]
+  },
+  {
+    "id": 141690,
+    "name": "Gallagher's Frolics, The Knights Of Saint Patrick",
+    "url": "https://thesession.org/members/179479/sets/141690",
+    "date": "2026-06-28 23:53:36",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 52987,
+        "name": "Gallagher's Frolics",
+        "url": "https://thesession.org/tunes/160#setting52987",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Edor",
+        "abc": "|: D | E3 GFE | B3 dBA |"
+      },
+      {
+        "id": 1822,
+        "name": "The Knights Of Saint Patrick",
+        "url": "https://thesession.org/tunes/1822#setting1822",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Dmaj",
+        "abc": "|: \"D\"dcd faf | dcd AFD | \"G\"GBG FAF |"
+      }
+    ]
+  },
+  {
+    "id": 141687,
+    "name": "Drowsy Maggie, Rakish Paddy, The Humours Of Tulla",
+    "url": "https://thesession.org/members/179479/sets/141687",
+    "date": "2026-06-28 23:38:05",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 49709,
+        "name": "Drowsy Maggie",
+        "url": "https://thesession.org/tunes/27#setting49709",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Edor",
+        "abc": "|: \"Em\"E2BE dEBE | E2BE \"D\"AFDF |"
+      },
+      {
+        "id": 28223,
+        "name": "Rakish Paddy",
+        "url": "https://thesession.org/tunes/86#setting28223",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmix",
+        "abc": "|: c2 cB c2 (3A_B=B | cBAG EG ~G2 |"
+      },
+      {
+        "id": 56503,
+        "name": "The Humours Of Tulla",
+        "url": "https://thesession.org/tunes/141#setting56503",
+        "type": "reel",
+        "meter": "4/4",
+        "key": "Dmaj",
+        "abc": "|: \"D\"d2 Ad BdAB | d2 fd \"G\"edBc |"
+      }
+    ]
+  },
+  {
+    "id": 141608,
+    "name": "The Blarney Pilgrim, The Kesh, The Leitrim Fancy",
+    "url": "https://thesession.org/members/179479/sets/141608",
+    "date": "2026-06-28 10:35:53",
+    "tags": [
+      "Christy"
+    ],
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 5,
+        "name": "The Blarney Pilgrim",
+        "url": "https://thesession.org/tunes/5#setting5",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Dmix",
+        "abc": "|: DED DEG | A2A ABc | BAG AGE |"
+      },
+      {
+        "id": 34987,
+        "name": "The Kesh",
+        "url": "https://thesession.org/tunes/55#setting34987",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Gmaj",
+        "abc": "D |: \"G\" G3 GAB | \"D\" A2A ABd |"
+      },
+      {
+        "id": 467,
+        "name": "The Leitrim Fancy",
+        "url": "https://thesession.org/tunes/467#setting467",
+        "type": "jig",
+        "meter": "6/8",
+        "key": "Dmaj",
+        "abc": "|: GBG FAF | E2B BAB | GBG FAF |"
+      }
+    ]
+  },
+  {
+    "id": 141596,
+    "name": "An TOileán Aerach, The Humours Of Glynn",
+    "url": "https://thesession.org/members/179479/sets/141596",
+    "date": "2026-06-28 07:47:38",
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 42432,
+        "name": "An TOileán Aerach",
+        "url": "https://thesession.org/tunes/21268#setting42432",
+        "type": "waltz",
+        "meter": "3/4",
+        "key": "Edor",
+        "abc": "AF |: E3 FAB | (3cBA Bc ef |"
+      },
+      {
+        "id": 56079,
+        "name": "The Humours Of Glynn",
+        "url": "https://thesession.org/tunes/22120#setting56079",
+        "type": "waltz",
+        "meter": "3/4",
+        "key": "Dmaj",
+        "abc": "(3ABc | d3 e (3cBA | B2 F2 Ad |"
+      }
+    ]
+  },
+  {
+    "id": 141513,
+    "name": "Cutting Bracken, The Knocknagoshel",
+    "url": "https://thesession.org/members/179479/sets/141513",
+    "date": "2026-06-27 02:32:13",
+    "member": {
+      "id": 179479,
+      "name": "Barpers",
+      "url": "https://thesession.org/members/179479"
+    },
+    "settings": [
+      {
+        "id": 27863,
+        "name": "Cutting Bracken",
+        "url": "https://thesession.org/tunes/647#setting27863",
+        "type": "strathspey",
+        "meter": "4/4",
+        "key": "Amin",
+        "abc": "A2 a2 g<e g2 | e>dBA GAB<G |"
+      },
+      {
+        "id": 10784,
+        "name": "The Knocknagoshel",
+        "url": "https://thesession.org/tunes/10784#setting10784",
+        "type": "polka",
+        "meter": "2/4",
+        "key": "Gmaj",
+        "abc": "|: GA/G/ ED | GB d2 | ed BG |"
+      }
+    ]
+  },
+  {
     "id": 141277,
     "name": "Táimse Im' Chodladh",
     "url": "https://thesession.org/members/179479/sets/141277",
@@ -352,28 +1469,6 @@
         "meter": "4/4",
         "key": "Dmaj",
         "abc": "(3ABc |: \"D\"d2 dd d2 cB | \"A\"ABGA F2A2 |"
-      }
-    ]
-  },
-  {
-    "id": 139358,
-    "name": "Sí Bheag Sí Mhór",
-    "url": "https://thesession.org/members/179479/sets/139358",
-    "date": "2026-06-01 07:39:31",
-    "member": {
-      "id": 179479,
-      "name": "Barpers",
-      "url": "https://thesession.org/members/179479"
-    },
-    "settings": [
-      {
-        "id": 28391,
-        "name": "Sí Bheag Sí Mhór",
-        "url": "https://thesession.org/tunes/449#setting28391",
-        "type": "waltz",
-        "meter": "3/4",
-        "key": "Dmaj",
-        "abc": "V:1! de |: \"D\"f2 fe d2 | \"Bm\"d2 de d2 |"
       }
     ]
   },
@@ -1060,6 +2155,7 @@
     "tags": [
       "boblearn",
       "bobNotIncluded",
+      "Christy",
       "Maurice",
       "SSlearning"
     ],
@@ -1104,6 +2200,7 @@
     "url": "https://thesession.org/members/179479/sets/133035",
     "date": "2026-03-26 06:07:50",
     "tags": [
+      "Christy",
       "MicksParty"
     ],
     "member": {
@@ -1163,6 +2260,7 @@
     "url": "https://thesession.org/members/179479/sets/133030",
     "date": "2026-03-26 05:16:40",
     "tags": [
+      "Christy",
       "MicksParty"
     ],
     "member": {
@@ -7251,8 +8349,7 @@
     "url": "https://thesession.org/members/179479/sets/110757",
     "date": "2025-08-08 06:37:45",
     "tags": [
-      "chrislearn",
-      "Christy"
+      "chrislearn"
     ],
     "member": {
       "id": 179479,
@@ -8984,7 +10081,8 @@
     "url": "https://thesession.org/members/179479/sets/104151",
     "date": "2025-05-15 14:03:56",
     "tags": [
-      "chrislearn"
+      "chrislearn",
+      "Christy"
     ],
     "member": {
       "id": 179479,
@@ -9487,10 +10585,11 @@
   },
   {
     "id": 101489,
-    "name": "Miss Thompson's, Madame Bonaparte",
+    "name": "Madame Bonaparte",
     "url": "https://thesession.org/members/179479/sets/101489",
     "date": "2025-04-10 06:18:46",
     "tags": [
+      "boblearn",
       "SSlearning"
     ],
     "member": {
@@ -9499,15 +10598,6 @@
       "url": "https://thesession.org/members/179479"
     },
     "settings": [
-      {
-        "id": 15635,
-        "name": "Miss Thompson's",
-        "url": "https://thesession.org/tunes/2264#setting15635",
-        "type": "hornpipe",
-        "meter": "4/4",
-        "key": "Dmaj",
-        "abc": "|: (3ABc | d2df edcB | A2AB AGFE |"
-      },
       {
         "id": 2344,
         "name": "Madame Bonaparte",
@@ -9603,7 +10693,8 @@
     "url": "https://thesession.org/members/179479/sets/100544",
     "date": "2025-03-27 09:22:09",
     "tags": [
-      "bobpipes"
+      "bobpipes",
+      "Christy"
     ],
     "member": {
       "id": 179479,
@@ -9975,6 +11066,7 @@
       "bobpipes",
       "bobpipesknown",
       "chrislearn",
+      "Christy",
       "MonThursProposed",
       "SSflute"
     ],
@@ -10086,6 +11178,7 @@
       "bobfiddle",
       "bobpipes",
       "bobpipesknown",
+      "Christy",
       "MonThursProposed"
     ],
     "member": {
@@ -10415,6 +11508,7 @@
     "tags": [
       "bobfiddle",
       "bobpipes",
+      "Christy",
       "MonThurs"
     ],
     "member": {
@@ -11386,6 +12480,7 @@
     "date": "2024-12-29 03:32:47",
     "tags": [
       "chrislearn",
+      "Christy",
       "MonThurs",
       "SSflute"
     ],
@@ -13353,6 +14448,7 @@
     "url": "https://thesession.org/members/179479/sets/89734",
     "date": "2024-11-15 03:03:33",
     "tags": [
+      "Christy",
       "GlendaGearin"
     ],
     "member": {
@@ -13619,6 +14715,7 @@
     "date": "2024-11-15 02:50:04",
     "tags": [
       "bobfiddle",
+      "boblearn",
       "bobpipes",
       "bobpipesknown",
       "MicksParty",
@@ -13973,6 +15070,7 @@
       "bobfiddle",
       "bobpipes",
       "bobpipesknown",
+      "Christy",
       "MonThurs"
     ],
     "member": {
@@ -14029,6 +15127,7 @@
       "bobfiddle",
       "bobpipes",
       "bobpipesknown",
+      "Christy",
       "festivalofjoy",
       "MicksParty",
       "MonThurs"
@@ -14217,6 +15316,7 @@
       "bobfiddle",
       "bobpipes",
       "bobpipesknown",
+      "Christy",
       "MonThurs",
       "SsConcertinaLearn"
     ],
@@ -16539,7 +17639,6 @@
     "url": "https://thesession.org/members/179479/sets/89384",
     "date": "2024-11-10 23:51:54",
     "tags": [
-      "Christy",
       "SSconcertina",
       "SSet"
     ],
@@ -16667,6 +17766,7 @@
     "url": "https://thesession.org/members/179479/sets/89381",
     "date": "2024-11-10 23:39:31",
     "tags": [
+      "Christy",
       "SSet"
     ],
     "member": {
@@ -16712,7 +17812,7 @@
     "tags": [
       "bobfiddle",
       "bobpipes",
-      "SSset#Christy"
+      "SSSet"
     ],
     "member": {
       "id": 179479,
@@ -16855,7 +17955,6 @@
     "url": "https://thesession.org/members/179479/sets/89018",
     "date": "2024-11-05 05:02:15",
     "tags": [
-      "Christy",
       "SSet"
     ],
     "member": {
@@ -16927,7 +18026,6 @@
     "tags": [
       "bobfiddle",
       "chrislearn",
-      "Christy",
       "MonThurs",
       "SSconcertina",
       "SSet",
@@ -17109,6 +18207,7 @@
     "date": "2024-10-31 12:32:01",
     "tags": [
       "bobfiddle",
+      "boblearn",
       "bobpipes",
       "bobpipesknown",
       "chrislearn",
@@ -17365,6 +18464,7 @@
     "url": "https://thesession.org/members/179479/sets/88705",
     "date": "2024-10-31 12:00:53",
     "tags": [
+      "Christy",
       "SSetchrislearn"
     ],
     "member": {
